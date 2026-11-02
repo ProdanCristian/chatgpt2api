@@ -49,17 +49,17 @@ export function buildStudioChatMessages(conversation: StudioConversation, curren
 }
 
 export function studioModeRequestErrorFallback(mode: StudioComposeMode) {
-  if (mode === 'image') return '图片生成失败'
-  if (mode === 'file') return '文件任务提交失败'
-  if (mode === 'search') return '搜索请求失败'
-  return '对话请求失败'
+  if (mode === 'image') return 'Image generation failed'
+  if (mode === 'file') return 'File task submission failed'
+  if (mode === 'search') return 'Search request failed'
+  return 'Chat request failed'
 }
 
 export function studioModeRetryErrorFallback(mode: StudioComposeMode) {
-  if (mode === 'image') return '图片重新生成失败'
-  if (mode === 'file') return '文件任务重新提交失败'
-  if (mode === 'search') return '搜索重新请求失败'
-  return '对话重新生成失败'
+  if (mode === 'image') return 'Image regeneration failed'
+  if (mode === 'file') return 'File task resubmission failed'
+  if (mode === 'search') return 'Search re-request failed'
+  return 'Chat regeneration failed'
 }
 
 export function studioErrorMessage(error: unknown, fallback: string) {
@@ -132,9 +132,9 @@ function buildStudioChatContextContent(message: StudioMessage): OpenAIV1ChatMess
 }
 
 function buildStudioChatContextText(message: StudioMessage) {
-  if (message.role === 'user' && message.mode === 'image') return `画图请求：${message.content}`
-  if (message.role === 'user' && message.mode === 'search') return `搜索请求：${message.content}`
-  if (message.role === 'user' && message.mode === 'file') return `${message.fileKind === 'psd' ? 'PSD' : 'PPT'} 文件请求：${message.content}`
+  if (message.role === 'user' && message.mode === 'image') return `Image request: ${message.content}`
+  if (message.role === 'user' && message.mode === 'search') return `Search request: ${message.content}`
+  if (message.role === 'user' && message.mode === 'file') return `${message.fileKind === 'psd' ? 'PSD' : 'PPT'} file request: ${message.content}`
   return message.content
 }
 

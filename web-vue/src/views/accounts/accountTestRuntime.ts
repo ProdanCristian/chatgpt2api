@@ -4,8 +4,8 @@ import { accountsApi } from '@/api/accounts'
 import type { Account, AccountTestMode, AccountTestResult } from '@/api/accounts'
 import { useModelCatalog } from '@/composables/useModelCatalog'
 
-const CHAT_PROMPT = 'Hi！ChatGPT'
-const IMAGE_PROMPT = '一只慵懒的猫咪蜷在柔软毛毯上睡觉，午后暖光，温馨室内，细节丰富，治愈系插画。'
+const CHAT_PROMPT = 'Hi! ChatGPT'
+const IMAGE_PROMPT = 'A lazy kitten curled up asleep on a soft blanket, warm afternoon light, cozy interior, rich detail, healing-style illustration.'
 
 type AccountTestRuntimeOptions = {
   loadData: () => Promise<unknown>
@@ -70,7 +70,7 @@ export function useAccountTestRuntime(options: AccountTestRuntimeOptions) {
         await options.loadData()
       }
     } catch (error) {
-      options.setError('账号测试失败', error)
+      options.setError('Account test failed', error)
     } finally {
       running.value = false
     }

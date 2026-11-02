@@ -63,28 +63,28 @@ function hasAccountCleanupTargets(result: AccountCleanupResult): boolean {
 
 function retentionCleanupMessage(result: RetentionCleanupResult): string {
   return [
-    `按当前保留策略检测到 ${result.total_removed} 项可清理数据，预计释放 ${formatBytes(result.total_size_bytes)}。`,
-    `日志：${result.logs.removed || 0} 条，保留 ${result.logs.retention_hours} 小时。`,
-    `图片：${result.images.removed || 0} 个，保留 ${result.images.retention_hours} 小时。`,
-    '是否立即删除这些过期数据？',
+    `Under the current retention policy, ${result.total_removed} items can be cleaned up, freeing about ${formatBytes(result.total_size_bytes)}.`,
+    `Logs: ${result.logs.removed || 0} entries, retained for ${result.logs.retention_hours} hours.`,
+    `Images: ${result.images.removed || 0} files, retained for ${result.images.retention_hours} hours.`,
+    'Delete this expired data now?',
   ].join('\n')
 }
 
 function cleanupDoneMessage(result: RetentionCleanupResult): string {
-  return `清理完成：删除 ${result.total_removed || 0} 项，释放 ${formatBytes(result.total_size_bytes)}`
+  return `Cleanup complete: deleted ${result.total_removed || 0} items, freed ${formatBytes(result.total_size_bytes)}`
 }
 
 function accountCleanupMessage(result: AccountCleanupResult): string {
   return [
-    `按当前账号策略检测到 ${result.total_removed} 个可移除账号。`,
-    `确认鉴权失效账号：${result.invalid || 0} 个。`,
-    `额度耗尽账号：${result.rate_limited || 0} 个。`,
-    '是否立即移除这些账号？正常账号不会受影响。',
+    `Under the current account policy, ${result.total_removed} accounts can be removed.`,
+    `Accounts with confirmed invalid authentication: ${result.invalid || 0}.`,
+    `Accounts with exhausted quota: ${result.rate_limited || 0}.`,
+    'Remove these accounts now? Healthy accounts will not be affected.',
   ].join('\n')
 }
 
 function accountCleanupDoneMessage(result: AccountCleanupResult): string {
-  return `账号清理完成：移除 ${result.total_removed || 0} 个账号`
+  return `Account cleanup complete: removed ${result.total_removed || 0} accounts`
 }
 
 export function useSettingsConfigRuntime(options: SettingsConfigRuntimeOptions) {
@@ -104,7 +104,7 @@ export function useSettingsConfigRuntime(options: SettingsConfigRuntimeOptions) 
     key: options.requestKey,
     loading: settingsLoading,
     error: settingsLoadError,
-    errorMessage: '设置加载失败',
+    errorMessage: 'Failed to load settings',
   })
 
   const hasUnsavedSettings = computed(() => {
@@ -134,7 +134,7 @@ export function useSettingsConfigRuntime(options: SettingsConfigRuntimeOptions) 
   function requireSavedSettings(actionLabel: string) {
     if (!localSettings.value) return false
     if (hasUnsavedSettings.value) {
-      toast.warning(`请先保存设置，再${actionLabel}`)
+      toast.warning(`Save your settings before you ${actionLabel}`)
       return false
     }
     return true
@@ -142,16 +142,16 @@ export function useSettingsConfigRuntime(options: SettingsConfigRuntimeOptions) 
 
   async function persistSettings(showToast = false) {
     if (!localSettings.value) {
-      throw new Error('设置尚未加载，请刷新设置后重试')
+      throw new Error('Settings have not loaded yet. Refresh the settings and try again')
     }
     if (!savedSettingsBaseline.value) {
-      throw new Error('设置基线尚未加载，请刷新设置后重试')
+      throw new Error('The settings baseline has not loaded yet. Refresh the settings and try again')
     }
     const payload = prepareSettingsPatch(localSettings.value, savedSettingsBaseline.value)
     const result = await settingsStore.updateSettingsPatch(payload)
     applySettings(result.settings, false)
     await options.afterSave?.()
-    if (showToast) toast.success('设置保存成功')
+    if (showToast) toast.success('Settings saved')
     return result
   }
 
@@ -162,16 +162,16 @@ export function useSettingsConfigRuntime(options: SettingsConfigRuntimeOptions) 
     try {
       preview = await settingsApi.previewRetentionCleanup(payload)
     } catch (error) {
-      toast.warning(`清理检测失败：${errorMessage(error, '无法检测日志和图片清理项')}`)
+      toast.warning(`Cleanup check failed: ${errorMessage(error, 'Unable to check for log and image cleanup items')}`)
       return
     }
     if (!hasRetentionCleanupTargets(preview)) return
 
     const confirmed = await confirmDialog.ask({
-      title: '检测到可清理数据',
+      title: 'Cleanable data detected',
       message: retentionCleanupMessage(preview),
-      confirmText: '立即清理',
-      cancelText: '稍后处理',
+      confirmText: 'Clean up now',
+      cancelText: 'Later',
     })
     if (!confirmed) return
 
@@ -179,7 +179,7 @@ export function useSettingsConfigRuntime(options: SettingsConfigRuntimeOptions) 
       const result = await settingsApi.runRetentionCleanup(payload)
       toast.success(cleanupDoneMessage(result))
     } catch (error) {
-      toast.error(`清理失败：${errorMessage(error, '无法删除过期日志和图片')}`)
+      toast.error(`Cleanup failed: ${errorMessage(error, 'Unable to delete expired logs and images')}`)
     }
   }
 
@@ -192,16 +192,16 @@ export function useSettingsConfigRuntime(options: SettingsConfigRuntimeOptions) 
     try {
       preview = await settingsApi.previewAccountCleanup(payload)
     } catch (error) {
-      toast.warning(`账号清理检测失败：${errorMessage(error, '无法检测可移除账号')}`)
+      toast.warning(`Account cleanup check failed: ${errorMessage(error, 'Unable to check for removable accounts')}`)
       return
     }
     if (!hasAccountCleanupTargets(preview)) return
 
     const confirmed = await confirmDialog.ask({
-      title: '检测到可移除账号',
+      title: 'Removable accounts detected',
       message: accountCleanupMessage(preview),
-      confirmText: '立即移除',
-      cancelText: '稍后处理',
+      confirmText: 'Remove now',
+      cancelText: 'Later',
     })
     if (!confirmed) return
 
@@ -209,7 +209,7 @@ export function useSettingsConfigRuntime(options: SettingsConfigRuntimeOptions) 
       const result = await settingsApi.runAccountCleanup(payload)
       toast.success(accountCleanupDoneMessage(result))
     } catch (error) {
-      toast.error(`账号清理失败：${errorMessage(error, '无法移除账号')}`)
+      toast.error(`Account cleanup failed: ${errorMessage(error, 'Unable to remove accounts')}`)
     }
   }
 
@@ -230,10 +230,10 @@ export function useSettingsConfigRuntime(options: SettingsConfigRuntimeOptions) 
   async function handleSave() {
     if (!localSettings.value) return
     const confirmed = await confirmDialog.ask({
-      title: '确认保存系统设置',
-      message: '即将保存当前系统设置，可能影响接口地址、并发、存储和备份策略。是否继续？',
-      confirmText: '保存',
-      cancelText: '取消',
+      title: 'Confirm saving system settings',
+      message: 'You are about to save the current system settings, which may affect API addresses, concurrency, storage, and backup policies. Continue?',
+      confirmText: 'Save',
+      cancelText: 'Cancel',
     })
     if (!confirmed) return
 
@@ -253,12 +253,12 @@ export function useSettingsConfigRuntime(options: SettingsConfigRuntimeOptions) 
         }
         toast.warning(
           revisionRefreshed
-            ? '配置已被其他操作更新，当前编辑已保留；已刷新版本，请确认后再次保存'
-            : '配置已被其他操作更新，当前编辑已保留；刷新版本失败，请手动刷新后重试',
+            ? 'The configuration was updated by another operation. Your current edits were kept and the version was refreshed. Review and save again'
+            : 'The configuration was updated by another operation. Your current edits were kept, but refreshing the version failed. Refresh manually and try again',
         )
         return
       }
-      toast.error(errorMessage(error, '保存失败'))
+      toast.error(errorMessage(error, 'Save failed'))
     } finally {
       isSaving.value = false
     }

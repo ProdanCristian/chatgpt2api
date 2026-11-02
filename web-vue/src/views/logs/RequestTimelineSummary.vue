@@ -1,7 +1,7 @@
 <template>
   <div class="timeline-summary">
     <MetaChip size="xs" tone="muted">
-      {{ stepCount }} 步
+      {{ stepCount }} {{ stepCount === 1 ? 'step' : 'steps' }}
     </MetaChip>
     <MetaChip size="xs" tone="muted">
       {{ durationMs > 0 ? formatRequestDuration(durationMs) : '-' }}

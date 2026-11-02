@@ -1,8 +1,8 @@
 /**
- * ECharts 统一主题配置
- * 基于项目的设计系统，提供一致的图表样式
+ * Unified ECharts theme configuration
+ * Based on the project's design system, providing consistent chart styles
  */
-// 主题色板
+// Theme palette
 export const chartColors = {
   primary: '#0ea5e9',
   success: '#10b981',
@@ -18,7 +18,7 @@ export const chartColors = {
   emerald: '#34d399',
 }
 
-// 模型图表专用色板，参考 new-api 的固定 palette 思路，保持明亮、干净、稳定。
+// Model chart palette, following new-api's fixed-palette approach: bright, clean, and stable.
 export const modelColorPalette = [
   '#5B8FF9',
   '#5AD8A6',
@@ -32,7 +32,7 @@ export const modelColorPalette = [
   '#2F80ED',
 ]
 
-// 当前实际模型显式绑定，避免主力模型在不同图表中颜色漂移。
+// Explicit colors for current models so primary models keep the same color across charts.
 export const modelColors: Record<string, string> = {
   auto: '#64748B',
   'gpt-5.5': modelColorPalette[0],
@@ -104,14 +104,14 @@ function getStablePaletteIndex(value: string): number {
   return hash % modelColorPalette.length
 }
 
-// 获取模型颜色：已知模型固定颜色，未知模型按名称稳定映射到 palette，避免全部回退成灰色。
+// Get model color: known models use fixed colors; unknown models map stably to the palette by name, so they don't all fall back to gray.
 export function getModelColor(model: string): string {
   const key = normalizeModelKey(model)
   if (!key || !looksLikeModelLabel(key)) return chartColors.gray
   return modelColors[key] || modelColorPalette[getStablePaletteIndex(key)]
 }
 
-// 过滤有效模型
+// Filter valid models
 export function filterValidModels(modelRequests: Record<string, number[]>): Record<string, number[]> {
   const filtered: Record<string, number[]> = {}
   Object.entries(modelRequests || {}).forEach(([model, data]) => {
@@ -123,14 +123,14 @@ export function filterValidModels(modelRequests: Record<string, number[]>): Reco
   return filtered
 }
 
-// 文本样式
+// Text styles
 const textStyle = {
   fontFamily: 'Noto Sans SC, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif',
   color: '#6b6b6b',      // text-muted-foreground
   fontSize: 11,
 }
 
-// 网格配置
+// Grid configuration
 const gridConfig = {
   left: 24,
   right: 16,
@@ -139,7 +139,7 @@ const gridConfig = {
   containLabel: true,
 }
 
-// 工具提示配置
+// Tooltip configuration
 const tooltipConfig = {
   backgroundColor: 'rgba(255, 255, 255, 0.95)',
   borderColor: '#e5e5e5',
@@ -152,7 +152,7 @@ const tooltipConfig = {
   extraCssText: 'border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);',
 }
 
-// 图例配置
+// Legend configuration
 const legendConfig = {
   textStyle: {
     ...textStyle,
@@ -164,7 +164,7 @@ const legendConfig = {
 }
 
 /**
- * 折线图主题配置
+ * Line chart theme configuration
  */
 export function getLineChartTheme() {
   return {
@@ -230,7 +230,7 @@ export function getLineChartTheme() {
 }
 
 /**
- * 饼图主题配置
+ * Pie chart theme configuration
  */
 export function getPieChartTheme(isMobile = false) {
   const legendPosition = isMobile
@@ -302,7 +302,7 @@ export function getPieChartTheme(isMobile = false) {
 }
 
 /**
- * 创建折线图系列配置
+ * Create line chart series configuration
  */
 export function createLineSeries(
   name: string,
@@ -353,7 +353,7 @@ export function createLineSeries(
 }
 
 /**
- * 创建饼图数据项配置
+ * Create pie chart data item configuration
  */
 export function createPieDataItem(
   name: string,

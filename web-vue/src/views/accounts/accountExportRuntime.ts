@@ -48,19 +48,20 @@ export function useAccountExportRuntime(options: AccountExportRuntimeOptions) {
       ? (options.accountAllTotal.value || options.accountListTotal.value || options.accounts.value.length)
       : options.selectedCount.value
     if (!count) {
-      toast.warning(scope === 'selected' ? '请先选择要导出的账号' : '暂无可导出的账号')
+      toast.warning(scope === 'selected' ? 'Select accounts to export first' : 'No accounts to export')
       return
     }
 
-    const formatLabel = format === 'json' ? '完整账号 JSON' : 'Access Token TXT'
-    const scopeLabel = exportAll ? '全部' : '选中'
+    const formatLabel = format === 'json' ? 'full account JSON' : 'Access Token TXT'
+    const scopeLabel = exportAll ? 'all' : 'selected'
+    const accountCountText = `${count} account${count === 1 ? '' : 's'}`
     const confirmed = await confirmDialog.ask({
-      title: `导出${scopeLabel}账号`,
+      title: `Export ${scopeLabel} accounts`,
       message: format === 'json'
-        ? `即将把${scopeLabel} ${count} 个账号导出为可再次导入的完整 JSON。文件包含账号凭据和配置，请只在可信环境保存。`
-        : `即将把${scopeLabel} ${count} 个账号导出为 TXT，每行一个 Access Token，不包含 RT、ID Token 和账号配置。`,
-      confirmText: `导出 ${formatLabel}`,
-      cancelText: '取消',
+        ? `You are about to export ${accountCountText} as full JSON that can be imported again. The file contains account credentials and settings, so only save it in a trusted environment.`
+        : `You are about to export ${accountCountText} as TXT, one Access Token per line, without RT, ID Token, or account settings.`,
+      confirmText: `Export ${formatLabel}`,
+      cancelText: 'Cancel',
     })
     if (!confirmed) return
 
@@ -69,10 +70,10 @@ export function useAccountExportRuntime(options: AccountExportRuntimeOptions) {
       const target: AccountSelectionScope = exportAll ? { mode: 'all' } : options.selectionScope.value
       const result = await accountsApi.exportAccounts(target, format)
       saveBlob(result.blob, createExportFilename(format))
-      const skippedText = result.skipped > 0 ? `，跳过 ${result.skipped} 个` : ''
-      toast.success(`已导出 ${result.exported} 个账号${skippedText} · ${formatLabel}`)
+      const skippedText = result.skipped > 0 ? `, ${result.skipped} skipped` : ''
+      toast.success(`Exported ${result.exported} account${result.exported === 1 ? '' : 's'}${skippedText} · ${formatLabel}`)
     } catch (error) {
-      options.setError('导出失败', error)
+      options.setError('Export failed', error)
     } finally {
       exportBusy.value = false
     }

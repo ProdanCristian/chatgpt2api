@@ -105,7 +105,7 @@ export function linkStudioSearchCitations(content: string, ownerId: string, sour
 }
 
 export function formatStudioSearchResult(result: OpenAIV1SearchResult, ownerId: string, sourceCount: number) {
-  const answer = cleanStudioSearchAnswer(result.answer) || 'Search completed, but upstream returned no summary.'
+  const answer = cleanStudioSearchAnswer(result.answer) || '搜索完成，但上游没有返回摘要。'
   return linkStudioSearchCitations(answer, ownerId, sourceCount)
 }
 

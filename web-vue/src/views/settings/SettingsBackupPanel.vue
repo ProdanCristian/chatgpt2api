@@ -1,13 +1,13 @@
 <template>
   <div class="space-y-4">
-    <FormSection title="R2 backup management">
+    <FormSection title="R2 备份管理">
       <div class="backup-switch-grid">
         <div class="backup-switch-item">
           <div class="backup-switch-control">
             <Checkbox
               v-model="backup.enabled"
               :disabled="fieldReadOnly('backup.enabled')"
-            >Enable scheduled backups</Checkbox>
+            >启用定时备份</Checkbox>
           </div>
         </div>
         <div class="backup-switch-item">
@@ -15,7 +15,7 @@
             <Checkbox
               v-model="backup.encrypt"
               :disabled="fieldReadOnly('backup.encrypt')"
-            >Enable backup encryption</Checkbox>
+            >启用备份加密</Checkbox>
           </div>
         </div>
       </div>
@@ -29,7 +29,7 @@
           />
         </FormField>
 
-        <FormField label="Bucket name">
+        <FormField label="Bucket 名称">
           <Input
             v-model.trim="backup.bucket"
             block
@@ -53,13 +53,13 @@
             type="password"
             block
             :disabled="fieldReadOnly('backup.secret_access_key')"
-            :placeholder="backup.has_secret_access_key ? 'Configured; leave blank to keep unchanged' : 'Enter the Secret Access Key'"
+            :placeholder="backup.has_secret_access_key ? '已配置，留空不修改' : '请输入 Secret Access Key'"
           />
         </FormField>
       </div>
 
       <div class="grid grid-cols-1 gap-2.5 md:grid-cols-2">
-        <FormField label="Backup prefix">
+        <FormField label="备份前缀">
           <Input
             v-model.trim="backup.prefix"
             block
@@ -68,29 +68,29 @@
           />
         </FormField>
 
-        <FormField label="Backups to keep">
+        <FormField label="保留份数">
           <SettingsNumberInput :field="backupRotationKeepField" />
         </FormField>
       </div>
 
-      <FormField label="Backup interval (minutes)">
+      <FormField label="备份间隔（分钟）">
         <SettingsNumberInput :field="backupIntervalMinutesField" />
       </FormField>
 
-      <FormField label="Encryption passphrase">
+      <FormField label="加密口令">
         <Input
           v-model="backup.passphrase"
           type="password"
           block
           :disabled="fieldReadOnly('backup.passphrase')"
-          :placeholder="backup.has_passphrase ? 'Configured; leave blank to keep unchanged' : 'Leave blank'"
+          :placeholder="backup.has_passphrase ? '已配置，留空不修改' : '留空'"
         />
       </FormField>
 
       <div class="space-y-2">
         <div class="flex flex-wrap items-center justify-between gap-2">
-          <p class="text-xs font-medium text-foreground">Backup contents</p>
-          <span class="text-xs text-muted-foreground">Application Database is always included</span>
+          <p class="text-xs font-medium text-foreground">备份内容</p>
+          <span class="text-xs text-muted-foreground">Application Database 始终包含</span>
         </div>
         <div class="settings-check-grid">
           <div
@@ -108,19 +108,19 @@
 
       <div class="flex flex-wrap items-center gap-2">
         <Button size="xs" variant="outline" :disabled="backupBusy === 'test'" @click="$emit('testConnection')">
-          {{ backupBusy === 'test' ? 'Testing...' : 'Test connection' }}
+          {{ backupBusy === 'test' ? '测试中...' : '测试连接' }}
         </Button>
         <Button size="xs" variant="outline" :disabled="backupBusy === 'run' || backupState?.running" @click="$emit('runNow')">
-          {{ backupBusy === 'run' || backupState?.running ? 'Backing up...' : 'Back up now' }}
+          {{ backupBusy === 'run' || backupState?.running ? '备份中...' : '立即备份' }}
         </Button>
         <Button size="xs" variant="outline" :disabled="backupLoading" @click="$emit('loadBackups')">
-          {{ backupLoading ? 'Loading...' : 'Refresh history' }}
+          {{ backupLoading ? '加载中...' : '刷新历史' }}
         </Button>
       </div>
 
       <div v-if="backupTestResult" class="rounded-xl border border-border bg-background px-3 py-2 text-xs">
         <p :class="backupTestResult.ok ? 'text-emerald-600' : 'text-rose-600'">
-          {{ backupTestResult.ok ? 'Backup connection available' : 'Backup connection unavailable' }}
+          {{ backupTestResult.ok ? '备份连接可用' : '备份连接不可用' }}
           <span v-if="backupTestResult.status"> · HTTP {{ backupTestResult.status }}</span>
         </p>
         <p v-if="backupTestResult.error" class="mt-1 break-all text-rose-600">{{ backupTestResult.error }}</p>
@@ -128,15 +128,15 @@
 
       <div class="rounded-xl border border-border bg-background px-3 py-3 text-xs">
         <div class="grid grid-cols-2 gap-2 text-muted-foreground">
-          <span>Last status</span>
+          <span>最近状态</span>
           <span class="text-right text-foreground">{{ backupStatusText }}</span>
-          <span>Last started</span>
+          <span>最近开始</span>
           <span class="text-right text-foreground">{{ formatDateTime(backupState?.last_started_at) }}</span>
-          <span>Last finished</span>
+          <span>最近完成</span>
           <span class="text-right text-foreground">{{ formatDateTime(backupState?.last_finished_at) }}</span>
-          <span>Last object</span>
+          <span>最近对象</span>
           <span class="break-all text-right font-mono text-foreground">{{ backupState?.last_object_key || '-' }}</span>
-          <span>Last error</span>
+          <span>最近错误</span>
           <span class="break-all text-right text-rose-600">{{ backupState?.last_error || '-' }}</span>
         </div>
       </div>
@@ -158,7 +158,7 @@
             :disabled="backupBusy === item.key"
             @click="$emit('deleteItem', item)"
           >
-            Delete
+            删除
           </Button>
         </div>
       </div>

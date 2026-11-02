@@ -10,7 +10,7 @@
         :total-count="totalCount"
         :unit="unit"
       >
-        Showing {{ visibleCount }} of {{ totalCount }} {{ unit }}
+        当前展示 {{ visibleCount }} / {{ totalCount }} {{ unit }}
       </slot>
     </div>
     <div class="flex w-full flex-wrap items-center gap-2 md:w-auto">
@@ -26,7 +26,7 @@
             :groups="pageSizeMenuGroups"
             block
             :placement="placement"
-            :aria-label="`${unit} per page`"
+            :aria-label="`${unit}每页数量`"
             @update:model-value="setPageSize"
           />
         </div>
@@ -38,7 +38,7 @@
           :disabled="disabled || safePage <= 1"
           @click="emit('update:page', safePage - 1)"
         >
-          Previous
+          上一页
         </Button>
         <span class="text-sm text-muted-foreground tabular-nums">{{ safePage }} / {{ pageCount }}</span>
         <Button
@@ -47,7 +47,7 @@
           :disabled="disabled || safePage >= pageCount"
           @click="emit('update:page', safePage + 1)"
         >
-          Next
+          下一页
         </Button>
       </div>
     </div>
@@ -74,7 +74,7 @@ const props = withDefaults(defineProps<{
   layoutMode?: ListLayoutMode
 }>(), {
   pageSizeOptions: () => [20, 50, 100],
-  unit: 'items',
+  unit: '条',
   disabled: false,
   placement: 'auto',
 })
@@ -92,7 +92,7 @@ const endIndex = computed(() => Math.min(props.totalCount, safePage.value * prop
 const visibleCount = computed(() => (props.totalCount ? Math.max(0, endIndex.value - startIndex.value + 1) : 0))
 const pageSizeMenuGroups = computed(() => [{
   options: props.pageSizeOptions.map((value) => ({
-    label: `${value} / page`,
+    label: `${value} / 页`,
     value: String(value),
   })),
 }])

@@ -47,7 +47,7 @@ export function useGalleryQueryRuntime(options: GalleryQueryRuntimeOptions) {
     pageSize,
     loading: isLoading,
     error: galleryLoadError,
-    errorMessage: 'Failed to load image management',
+    errorMessage: '加载图片管理失败',
     isEmpty: () => files.value.length === 0,
     fetch: ({ page, pageSize: size }) => galleryApi.getFiles({
       page,
@@ -70,7 +70,7 @@ export function useGalleryQueryRuntime(options: GalleryQueryRuntimeOptions) {
       options.onApplied?.()
     },
     onError: (message) => {
-      options.toast.error(message, 'Load failed')
+      options.toast.error(message, '加载失败')
     },
   })
 

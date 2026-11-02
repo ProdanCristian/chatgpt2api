@@ -1,13 +1,13 @@
 <template>
   <div class="gallery-page" :class="{ 'gallery-page--contained': isWorkspaceLayout }">
     <PagePanel class="gallery-hero">
-      <PanelHeader title="Image Management">
+      <PanelHeader title="图片管理">
         <template #actions>
           <Button size="sm" variant="outline" :disabled="isLoading" @click="openStorageModal">
-            Storage
+            存储管理
           </Button>
           <Button size="sm" variant="outline" :disabled="isLoading" @click="refreshAll">
-            {{ isLoading ? 'Refreshing...' : 'Refresh' }}
+            {{ isLoading ? '刷新中...' : '刷新' }}
           </Button>
         </template>
       </PanelHeader>
@@ -20,7 +20,7 @@
         <Input
           :model-value="searchQuery"
           type="text"
-          placeholder="Search filename, path, tags"
+          placeholder="搜索文件名、路径、标签"
           block
           root-class="gallery-filter-search"
           @update:model-value="searchQuery = $event"
@@ -29,7 +29,7 @@
           <GroupedSelectMenu
             v-model="tagFilter"
             :options="tagOptions"
-            placeholder="All tags"
+            placeholder="全部标签"
             selected-indicator="none"
           />
         </div>
@@ -55,10 +55,10 @@
             :disabled="files.length === 0 || isLoading"
             @update:model-value="toggleSelectAllVisible"
           >
-            <span class="sr-only">Select all images in the current view</span>
+            <span class="sr-only">全选当前视图图片</span>
           </Checkbox>
           <div class="min-w-0">
-            <p class="ui-section-kicker">Current view</p>
+            <p class="ui-section-kicker">当前视图</p>
             <p class="mt-1 text-xs text-muted-foreground">{{ paginationSummary }}</p>
           </div>
         </div>
@@ -70,7 +70,7 @@
             :disabled="selectedCount === 0 || batchBusy"
             @click="handleBatchDownload"
           >
-            Download selected
+            批量下载
           </Button>
           <Button
             size="xs"
@@ -78,7 +78,7 @@
             :disabled="selectedCount === 0 || batchBusy"
             @click="handleDeleteSelected"
           >
-            Delete selected
+            批量删除
           </Button>
           <Button
             size="xs"
@@ -86,7 +86,7 @@
             :disabled="selectedCount === 0 || batchBusy"
             @click="clearSelection"
           >
-            Clear selection
+            取消选择
           </Button>
         </ActionRow>
       </div>
@@ -94,15 +94,15 @@
       <PageLoadingState
         v-if="!hasLoadedOnce && files.length === 0"
         class="gallery-state-block"
-        title="Loading images"
-        description="Reading image records, tags, and pagination data."
+        title="正在加载图片"
+        description="读取图片记录、标签和分页数据。"
       />
 
       <StateBlock
         v-else-if="files.length === 0"
         class="gallery-state-block"
-        :title="galleryLoadError ? 'Failed to load image management' : 'No images'"
-        :description="galleryLoadError || 'Try different filters or refresh.'"
+        :title="galleryLoadError ? '图片管理加载失败' : '暂无图片'"
+        :description="galleryLoadError || '换个筛选条件或刷新后再看。'"
       >
         <template #media>
           <Icon icon="lucide:image-off" class="h-12 w-12 text-muted-foreground/40" />
@@ -151,7 +151,7 @@
         class="gallery-pagination"
         :total-count="totalItems"
         :page-size-options="galleryPageSizeOptions"
-        unit="images"
+        unit="张图片"
         :disabled="isLoading"
       />
     </PagePanel>
@@ -197,18 +197,18 @@
 
     <ModalShell
       :open="isStorageModalOpen"
-      aria-label="Image storage management"
+      aria-label="图片存储管理"
       close-on-backdrop
       @close="closeStorageModal"
     >
       <div class="gallery-storage-modal">
         <header class="gallery-storage-header">
           <div>
-            <p class="ui-section-kicker">Disk &amp; gallery</p>
-            <h3>Storage Management</h3>
-            <p>View image usage and free disk space, and run simple cleanups.</p>
+            <p class="ui-section-kicker">磁盘与图库</p>
+            <h3>存储管理</h3>
+            <p>查看图片占用、磁盘剩余空间，并执行简单清理。</p>
           </div>
-          <CloseButton label="Close storage management" @click="closeStorageModal" />
+          <CloseButton label="关闭存储管理" @click="closeStorageModal" />
         </header>
 
         <ModalBody density="normal">
@@ -228,12 +228,12 @@
             </div>
           </div>
 
-          <div class="gallery-storage-meter" aria-label="Disk usage">
+          <div class="gallery-storage-meter" aria-label="磁盘使用率">
             <div class="gallery-storage-meter__bar">
               <span :style="{ width: storageUsageBarWidth }"></span>
             </div>
             <div class="gallery-storage-meter__meta">
-              <span>Disk usage</span>
+              <span>磁盘使用率</span>
               <strong>{{ storageUsagePercent }}</strong>
             </div>
           </div>
@@ -247,8 +247,8 @@
 
           <div class="gallery-storage-target">
             <div>
-              <span>Clean up to a target free space</span>
-              <p>Enter the free disk space to keep; the oldest images are removed first.</p>
+              <span>按目标剩余空间清理</span>
+              <p>输入希望保留的磁盘剩余空间，系统会从旧图片开始清理。</p>
             </div>
             <Input
               :model-value="targetFreeMb"
@@ -260,10 +260,10 @@
             />
             <div class="gallery-storage-target-actions">
               <Button size="sm" variant="ghost" :disabled="isStorageBusy" @click="handleCleanupToTarget(true)">
-                Estimate
+                预估
               </Button>
               <Button size="sm" variant="outline" :disabled="isStorageBusy" @click="handleCleanupToTarget(false)">
-                Clean up to target
+                清理到目标
               </Button>
             </div>
           </div>
@@ -271,14 +271,14 @@
 
         <ModalFooter align="between" compact>
           <Button size="sm" variant="ghost" :disabled="isStorageBusy" @click="refreshStorageStats">
-            {{ isStorageBusy ? 'Working...' : 'Refresh stats' }}
+            {{ isStorageBusy ? '处理中...' : '刷新统计' }}
           </Button>
           <div class="gallery-storage-actions">
             <Button size="sm" variant="outline" :disabled="isStorageBusy" @click="handleCompressStorage">
-              Compress images
+              压缩图片
             </Button>
             <Button size="sm" variant="outline" :disabled="isStorageBusy" @click="handleCleanupExpired">
-              Clean up expired
+              清理过期
             </Button>
           </div>
         </ModalFooter>

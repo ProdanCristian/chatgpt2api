@@ -7,13 +7,13 @@
       <div class="w-full max-w-md rounded-[2.5rem] border border-border bg-card p-10 shadow-2xl shadow-black/10">
         <div class="text-center">
           <h1 class="text-3xl font-semibold text-foreground">ChatGPT2API</h1>
-          <p class="mt-2 text-sm text-muted-foreground">Console sign-in</p>
+          <p class="mt-2 text-sm text-muted-foreground">控制台登录</p>
         </div>
 
         <form class="mt-8 space-y-6" @submit.prevent="handleLogin">
           <div class="space-y-2">
             <label for="password" class="ui-field-label text-sm font-medium text-foreground">
-              Admin key
+              管理密钥
             </label>
             <Input
               id="password"
@@ -21,7 +21,7 @@
               type="password"
               size="md"
               block
-              placeholder="Enter Bearer key"
+              placeholder="输入 Bearer key"
               :disabled="isLoading"
             />
           </div>
@@ -33,7 +33,7 @@
             block
             :disabled="isLoading || !password"
           >
-            {{ isLoading ? 'Signing in...' : 'Sign in' }}
+            {{ isLoading ? '登录中...' : '登录' }}
           </Button>
         </form>
 
@@ -81,12 +81,12 @@ async function handleLogin() {
   try {
     const loggedIn = await authStore.login(password.value)
     if (!loggedIn) {
-      toast.error('The key is invalid or has expired.')
+      toast.error('密钥无效或已失效。')
       return
     }
     await router.replace(resolveLoginRedirect(route.query.redirect, authStore.homeRoute))
   } catch (error: any) {
-    toast.error(error.message || 'Sign-in failed. Please check your password.')
+    toast.error(error.message || '登录失败，请检查密码。')
   } finally {
     isLoading.value = false
   }

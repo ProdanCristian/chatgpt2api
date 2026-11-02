@@ -8,13 +8,13 @@
       :class="{ 'min-h-0 flex-1': isWorkspaceLayout }"
     >
       <div class="log-control-panel">
-        <PanelHeader title="Log Management" align="start">
+        <PanelHeader title="日志管理" align="start">
           <template #actions>
             <Button size="sm" variant="outline" :disabled="isFetching" @click="fetchLogs">
-              {{ isFetching ? 'Refreshing...' : 'Refresh' }}
+              {{ isFetching ? '刷新中...' : '刷新' }}
             </Button>
             <Button size="sm" variant="outline" :disabled="exportDisabled" @click="exportSystemLogs">
-              Export current page summary
+              导出当前页摘要
             </Button>
             <Button
               size="sm"
@@ -23,7 +23,7 @@
               :disabled="selectedLogCount === 0 || isFetching || isDeleting"
               @click="requestDeleteSelectedLogs"
             >
-              Delete selected{{ selectedLogCount ? ` (${selectedLogCount})` : '' }}
+              删除所选{{ selectedLogCount ? ` (${selectedLogCount})` : '' }}
             </Button>
           </template>
         </PanelHeader>
@@ -38,7 +38,7 @@
           <Input
             v-model.trim="filters.search"
             type="text"
-            placeholder="Search keywords, accounts, error codes"
+            placeholder="搜索关键词、账号、错误码"
             block
             root-class="log-search-input"
           />
@@ -53,10 +53,10 @@
               :model-value="systemQuickFilterSelection"
               :groups="systemQuickFilterGroups"
               multiple
-              placeholder="Filter"
-              selected-count-text="Filter"
+              placeholder="筛选"
+              selected-count-text="筛选"
               :max-visible-labels="1"
-              aria-label="Filter"
+              aria-label="筛选"
               @update:model-value="updateSystemQuickFilters"
             />
           </div>
@@ -65,15 +65,15 @@
               :model-value="advancedConditionSelection"
               :groups="advancedConditionMenuGroups"
               multiple
-              placeholder="More conditions"
-              selected-count-text="Conditions"
+              placeholder="更多条件"
+              selected-count-text="条件"
               :max-visible-labels="1"
-              aria-label="More conditions"
+              aria-label="更多条件"
               @update:model-value="updateAdvancedConditions"
             />
           </div>
           <Button size="sm" variant="ghost" :disabled="activeSystemFilterCount === 0" @click="resetFilters">
-            Reset
+            重置
           </Button>
         </FilterToolbar>
       </div>
@@ -149,8 +149,8 @@
       :open="deleteConfirmation.open"
       :title="deleteConfirmation.title"
       :message="deleteConfirmation.message"
-      confirm-text="Delete"
-      cancel-text="Cancel"
+      confirm-text="删除"
+      cancel-text="取消"
       @confirm="logSelectionRuntime.confirmDeleteRequest"
       @cancel="closeDeleteConfirmation"
     />
@@ -264,8 +264,8 @@ const systemLogPageSize = toRef(filters, 'limit')
 
 const logPreviewActions = useGalleryFileActions({
   showDownloadSuccess: false,
-  copyErrorMessage: 'Failed to copy image link.',
-  downloadErrorMessage: (error) => `Download failed: ${errorMessage(error, 'Image source is not readable')}`,
+  copyErrorMessage: '复制图片链接失败。',
+  downloadErrorMessage: (error) => `下载失败：${errorMessage(error, '图片源不可读取')}`,
 })
 const logDetailRuntime = useLogDetailRuntime({
   loadDetail: async (id) => normalizeSystemLogDetail(await logsApi.get(id), { apiBaseUrl }),
@@ -320,20 +320,20 @@ const deleteConfirmation = computed(() => {
   if (deleteTarget.value) {
     return {
       open: true,
-      title: 'Delete log',
-      message: 'Delete this log?',
+      title: '删除日志',
+      message: '确认删除这条日志？',
     }
   }
   if (deleteSelectedOpen.value) {
     return {
       open: true,
-      title: 'Delete logs',
-      message: `Delete ${selectedLogCount.value} ${selectedLogCount.value === 1 ? 'log' : 'logs'}?`,
+      title: '删除日志',
+      message: `确认删除 ${selectedLogCount.value} 条日志？`,
     }
   }
   return {
     open: false,
-    title: 'Delete log',
+    title: '删除日志',
     message: '',
   }
 })
@@ -353,7 +353,7 @@ const systemLogsQuery = usePagedQuery({
   pageSize: systemLogPageSize,
   loading: isFetching,
   error: logsLoadError,
-  errorMessage: 'Failed to load logs',
+  errorMessage: '日志加载失败',
   fetch: ({ page, pageSize }) => logsApi.listSystem({
     type: filters.type || undefined,
     start_date: filters.startDate || undefined,
@@ -533,9 +533,9 @@ async function copyText(value: string) {
   if (!text) return
   try {
     await navigator.clipboard.writeText(text)
-    toast.success('Copied')
+    toast.success('已复制')
   } catch {
-    toast.error('Copy failed')
+    toast.error('复制失败')
   }
 }
 

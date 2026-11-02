@@ -1,13 +1,13 @@
 <template>
   <ModalShell
     :open="open"
-    aria-label="Recent file tasks"
+    aria-label="最近文件任务"
     panel-class="studio-recent-file-tasks-modal"
     close-on-backdrop
     @close="emit('close')"
   >
     <ModalHeader
-      title="Recent file tasks"
+      title="最近文件任务"
       :subtitle="headerSubtitle"
       compact
       @close="emit('close')"
@@ -17,15 +17,15 @@
       <PageLoadingState
         v-if="isLoading && tasks.length === 0"
         compact
-        title="Loading file tasks"
-        description="Fetching the PPT and PSD tasks most recently submitted with the current key."
+        title="正在读取文件任务"
+        description="获取当前密钥最近提交的 PPT 与 PSD 任务。"
       />
 
       <StateBlock v-else-if="error && tasks.length === 0">
-        <EmptyState plain title="Failed to load file tasks" :description="error" />
+        <EmptyState plain title="文件任务加载失败" :description="error" />
         <div class="recent-file-task-state-action">
           <Button size="sm" variant="outline" :disabled="isLoading" @click="refresh">
-            Reload
+            重新加载
           </Button>
         </div>
       </StateBlock>
@@ -33,8 +33,8 @@
       <EmptyState
         v-else-if="tasks.length === 0"
         plain
-        title="No file tasks"
-        description="Tasks appear here after you submit a PPT or PSD."
+        title="暂无文件任务"
+        description="提交 PPT 或 PSD 后，任务会显示在这里。"
       />
 
       <div v-else class="recent-file-task-content">
@@ -54,14 +54,14 @@
 
             <div class="recent-file-task-info">
               <div class="recent-file-task-heading">
-                <strong>{{ task.kind.toUpperCase() }} file task</strong>
+                <strong>{{ task.kind.toUpperCase() }} 文件任务</strong>
                 <MetaChip size="xs" :tone="task.status_tone">
                   {{ task.status_label }}
                 </MetaChip>
               </div>
               <div class="recent-file-task-meta">
                 <span>{{ task.updated_at || task.created_at }}</span>
-                <span v-if="task.elapsed_seconds > 0">Took {{ formatElapsed(task.elapsed_seconds) }}</span>
+                <span v-if="task.elapsed_seconds > 0">耗时 {{ formatElapsed(task.elapsed_seconds) }}</span>
               </div>
               <p v-if="task.error" class="recent-file-task-error">{{ task.error }}</p>
             </div>
@@ -78,7 +78,7 @@
                 @click="handleDownload(task, task.result.primary_url, 'file')"
               >
                 <Icon icon="lucide:download" class="h-3.5 w-3.5" />
-                Download file
+                下载文件
               </button>
               <button
                 v-if="task.can_download && task.result?.zip_url"
@@ -88,7 +88,7 @@
                 @click="handleDownload(task, task.result.zip_url, 'zip')"
               >
                 <Icon icon="lucide:archive" class="h-3.5 w-3.5" />
-                Download ZIP
+                下载 ZIP
               </button>
               <Button
                 v-if="task.error"
@@ -97,7 +97,7 @@
                 :disabled="isTaskBusy(task.id)"
                 @click="handleCopyError(task)"
               >
-                Copy error
+                复制错误
               </Button>
               <Button
                 v-if="task.can_delete"
@@ -107,7 +107,7 @@
                 :disabled="isTaskBusy(task.id)"
                 @click="handleDelete(task)"
               >
-                {{ isTaskBusy(task.id) ? 'Working' : 'Delete' }}
+                {{ isTaskBusy(task.id) ? '处理中' : '删除' }}
               </Button>
             </div>
           </article>
@@ -116,9 +116,9 @@
     </ModalBody>
 
     <ModalFooter align="between" compact>
-      <span class="recent-file-task-count">{{ tasks.length }} most recent</span>
+      <span class="recent-file-task-count">最近 {{ tasks.length }} 条</span>
       <Button size="sm" variant="outline" :disabled="isLoading" @click="refresh">
-        {{ isLoading ? 'Refreshing' : 'Refresh' }}
+        {{ isLoading ? '刷新中' : '刷新' }}
       </Button>
     </ModalFooter>
   </ModalShell>
@@ -172,15 +172,15 @@ const {
   copyTaskError,
 } = useStudioRecentFileTasksRuntime()
 const headerSubtitle = computed(() => {
-  if (isLoading.value && tasks.value.length === 0) return 'Loading recent tasks'
-  return tasks.value.length ? `${tasks.value.length} recent ${tasks.value.length === 1 ? 'task' : 'tasks'}` : 'PPT and PSD task history'
+  if (isLoading.value && tasks.value.length === 0) return '正在读取最近任务'
+  return tasks.value.length ? `${tasks.value.length} 条最近任务` : 'PPT 与 PSD 任务记录'
 })
 
 function formatElapsed(seconds: number) {
-  if (seconds < 60) return `${seconds} s`
+  if (seconds < 60) return `${seconds} 秒`
   const minutes = Math.floor(seconds / 60)
   const remainingSeconds = seconds % 60
-  return remainingSeconds ? `${minutes} min ${remainingSeconds} s` : `${minutes} min`
+  return remainingSeconds ? `${minutes} 分 ${remainingSeconds} 秒` : `${minutes} 分`
 }
 
 async function handleDownload(
@@ -193,23 +193,23 @@ async function handleDownload(
 
 async function handleCopyError(task: EditableFileTask) {
   const copied = await copyTaskError(task)
-  if (copied) toast.success('Error message copied')
+  if (copied) toast.success('错误信息已复制')
   else if (actionError.value) toast.error(actionError.value)
 }
 
 async function handleDelete(task: EditableFileTask) {
   const confirmed = await confirmDialog.ask({
-    title: 'Delete file task',
-    message: `Delete this ${task.kind.toUpperCase()} file task record and its local output? This can't be undone.`,
-    confirmText: 'Delete',
-    cancelText: 'Cancel',
+    title: '删除文件任务',
+    message: `确认删除这条 ${task.kind.toUpperCase()} 文件任务记录及其本地产物？此操作不可恢复。`,
+    confirmText: '删除',
+    cancelText: '取消',
   })
   if (!confirmed) return
 
   const removed = await removeTask(task)
   if (removed) {
     emit('deleted', task.id)
-    toast.success('File task deleted')
+    toast.success('文件任务已删除')
   }
   else if (actionError.value) toast.error(actionError.value)
 }

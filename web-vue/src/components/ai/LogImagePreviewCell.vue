@@ -3,19 +3,19 @@
     <button
       type="button"
       class="log-image-preview-cell__button"
-      title="View image preview"
+      title="查看图片预览"
       @click="$emit('preview-click')"
     >
       <img
         v-if="firstImageUrl && !firstImageBroken"
         :src="firstImageUrl"
-        :alt="alt || 'Log result image'"
+        :alt="alt || '日志结果图片'"
         loading="lazy"
         class="log-image-preview-cell__image"
         @error="$emit('image-error', $event, firstImageUrl)"
       />
       <span v-else class="log-image-preview-cell__fallback">
-        Preview unavailable
+        无法预览
       </span>
       <span v-if="imageUrls.length > 1" class="log-image-preview-cell__count">
         +{{ imageUrls.length - 1 }}

@@ -2,17 +2,17 @@
   <div class="space-y-4">
     <div class="flex flex-wrap items-start justify-between gap-3">
       <div>
-        <p class="ui-section-title">User key management</p>
+        <p class="ui-section-title">用户密钥管理</p>
         <p class="mt-1 text-xs text-muted-foreground">
-          Create API keys for regular users; after signing in, regular users only reach the chat and image page.
+          创建给普通用户使用的调用密钥；普通用户登录后只进入对话画图页。
         </p>
       </div>
       <div class="flex flex-wrap items-center gap-2">
         <Button size="sm" variant="outline" :disabled="userKeysLoading" @click="$emit('load')">
-          {{ userKeysLoading ? 'Refreshing...' : 'Refresh keys' }}
+          {{ userKeysLoading ? '刷新中...' : '刷新密钥' }}
         </Button>
         <Button size="sm" variant="primary" :disabled="userKeyBusy === 'create'" @click="$emit('create')">
-          Create user key
+          创建用户密钥
         </Button>
       </div>
     </div>
@@ -23,7 +23,7 @@
     >
       <div class="flex flex-wrap items-start justify-between gap-3">
         <div class="min-w-0">
-          <p class="font-medium">New keys are shown only once. Copy and save it now.</p>
+          <p class="font-medium">新密钥只展示一次，请现在复制保存。</p>
           <p class="mt-2 break-all font-mono text-xs">{{ newUserKey }}</p>
         </div>
         <Button
@@ -32,7 +32,7 @@
           root-class="shrink-0 border-emerald-200 bg-white text-emerald-700"
           @click="$emit('copy', newUserKey)"
         >
-          Copy
+          复制
         </Button>
       </div>
     </div>
@@ -40,11 +40,11 @@
     <PageLoadingState
       v-if="userKeysLoading"
       compact
-      title="Loading user keys"
-      description="Reading the list of regular user keys."
+      title="正在加载用户密钥"
+      description="读取普通用户密钥列表。"
     />
     <StateBlock v-else-if="userKeys.length === 0" compact dashed>
-      No regular user keys yet. Once created, they can be handed out to users who only need the image page.
+      暂无普通用户密钥。创建后可以分发给只需要画图入口的用户。
     </StateBlock>
     <div v-else class="space-y-2">
       <div
@@ -54,17 +54,17 @@
       >
         <div class="min-w-0">
           <div class="flex flex-wrap items-center gap-2">
-            <p class="truncate text-sm font-medium text-foreground">{{ item.name || 'Regular user' }}</p>
+            <p class="truncate text-sm font-medium text-foreground">{{ item.name || '普通用户' }}</p>
             <StateBadge
               :tone="item.enabled ? 'success' : 'muted'"
               size="xs"
               shape="rounded"
             >
-              {{ item.enabled ? 'Enabled' : 'Disabled' }}
+              {{ item.enabled ? '已启用' : '已禁用' }}
             </StateBadge>
           </div>
           <p class="mt-1 text-xs text-muted-foreground">
-            Created {{ formatDateTime(item.created_at) }} · Last used {{ formatDateTime(item.last_used_at) }}
+            创建 {{ formatDateTime(item.created_at) }} · 最近使用 {{ formatDateTime(item.last_used_at) }}
           </p>
         </div>
         <div class="flex flex-wrap items-center gap-2">
@@ -74,7 +74,7 @@
             :disabled="userKeyBusy === item.id"
             @click="$emit('edit', item)"
           >
-            Edit
+            编辑
           </Button>
           <Button
             size="xs"
@@ -82,7 +82,7 @@
             :disabled="userKeyBusy === item.id"
             @click="$emit('toggle', item)"
           >
-            {{ item.enabled ? 'Disable' : 'Enable' }}
+            {{ item.enabled ? '禁用' : '启用' }}
           </Button>
           <Button
             size="xs"
@@ -91,7 +91,7 @@
             :disabled="userKeyBusy === item.id"
             @click="$emit('delete', item)"
           >
-            Delete
+            删除
           </Button>
         </div>
       </div>

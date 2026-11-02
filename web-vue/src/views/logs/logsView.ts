@@ -69,24 +69,24 @@ export type LogRequestDisplay = LogCellDisplay & {
 }
 
 export const typeOptions = [
-  { label: 'Call logs', value: 'call' },
-  { label: 'Account logs', value: 'account' },
-  { label: 'All types', value: '' },
+  { label: '调用日志', value: 'call' },
+  { label: '账号日志', value: 'account' },
+  { label: '全部类型', value: '' },
 ]
 
 export const systemLogPageSizeOptions = [20, 50, 100, 200, 500]
 
 export const statusOptions = [
-  { label: 'All statuses', value: '' },
-  { label: 'Success', value: 'success' },
-  { label: 'Failed', value: 'failed' },
-  { label: 'Rate-limited / restricted', value: 'limited' },
+  { label: '全部状态', value: '' },
+  { label: '成功', value: 'success' },
+  { label: '失败', value: 'failed' },
+  { label: '限流/受限', value: 'limited' },
 ]
 
 export const systemQuickFilterOptions: LogGroupedSelectOption[] = [
-  { label: 'Failed only', value: 'quick:status:failed' },
-  { label: 'Image to image', value: 'quick:endpoint:/v1/images/edits' },
-  { label: 'Text to image', value: 'quick:endpoint:/v1/images/generations' },
+  { label: '只看失败', value: 'quick:status:failed' },
+  { label: '图生图', value: 'quick:endpoint:/v1/images/edits' },
+  { label: '文生图', value: 'quick:endpoint:/v1/images/generations' },
 ]
 
 export const quickEndpointValues = ['/v1/images/edits', '/v1/images/generations'] as const
@@ -128,27 +128,27 @@ export function buildAdvancedConditionMenuGroups(
   const groups: AdvancedConditionGroup[] = [
     {
       key: 'type',
-      label: 'Type',
+      label: '类型',
       options: [
-        { label: 'Call logs', value: 'call' },
-        { label: 'Account logs', value: 'account' },
-        { label: 'All types', value: '' },
+        { label: '调用日志', value: 'call' },
+        { label: '账号日志', value: 'account' },
+        { label: '全部类型', value: '' },
       ],
     },
     {
       key: 'status',
-      label: 'Status',
+      label: '状态',
       options: statusOptions,
     },
     {
       key: 'model',
-      label: 'Model',
-      options: optionFromFacet(modelFacet, 'All models'),
+      label: '模型',
+      options: optionFromFacet(modelFacet, '全部模型'),
     },
     {
       key: 'account',
-      label: 'Account',
-      options: optionFromFacet(accountFacet, 'All accounts'),
+      label: '账号',
+      options: optionFromFacet(accountFacet, '全部账号'),
     },
   ]
 
@@ -255,7 +255,7 @@ export function buildLogPreviewImages(
       url,
       title: sourceUrl,
       filename: filenameFromUrl(sourceUrl),
-      alt: `Log result image ${index + 1}`,
+      alt: `日志结果图片 ${index + 1}`,
       broken: isPreviewBroken(url),
     }
   })
@@ -292,12 +292,12 @@ export function systemMetricItems(logMeta: Pick<SystemLogsResponse, 'stats' | 's
   const stats = logMeta.stats
   const pageScope = logMeta.stats_scope === 'page'
   return [
-    { label: pageScope ? 'Page total' : 'Total', value: stats.total, class: 'text-foreground' },
-    { label: pageScope ? 'Page success' : 'Success', value: stats.success, class: 'text-emerald-600' },
-    { label: pageScope ? 'Page text' : 'Text', value: stats.text_review, class: 'text-violet-600' },
-    { label: pageScope ? 'Page failed' : 'Failed', value: stats.failed, class: 'text-rose-600' },
-    { label: pageScope ? 'Page limited' : 'Limited', value: stats.limited, class: 'text-amber-600' },
-    { label: pageScope ? 'Page images' : 'Image API', value: stats.image, class: 'text-cyan-600' },
+    { label: pageScope ? '本页总数' : '总数', value: stats.total, class: 'text-foreground' },
+    { label: pageScope ? '本页成功' : '成功', value: stats.success, class: 'text-emerald-600' },
+    { label: pageScope ? '本页文本' : '文本', value: stats.text_review, class: 'text-violet-600' },
+    { label: pageScope ? '本页失败' : '失败', value: stats.failed, class: 'text-rose-600' },
+    { label: pageScope ? '本页限流' : '限流', value: stats.limited, class: 'text-amber-600' },
+    { label: pageScope ? '本页图片' : '图片接口', value: stats.image, class: 'text-cyan-600' },
   ]
 }
 

@@ -1,14 +1,14 @@
 <template>
   <ModalShell
     :open="Boolean(file)"
-    aria-label="Edit tags"
+    aria-label="编辑标签"
     :z-index="150"
     close-on-backdrop
     @close="$emit('close')"
   >
     <template v-if="file">
       <ModalHeader
-        title="Edit tags"
+        title="编辑标签"
         :subtitle="file.path"
         :close-disabled="isSaving"
         @close="$emit('close')"
@@ -25,7 +25,7 @@
             <Input
               :model-value="draft"
               type="text"
-              placeholder="Separate multiple tags with commas or spaces"
+              placeholder="多个标签用逗号或空格分隔"
               block
               @update:model-value="$emit('update:draft', $event)"
               @keyup.enter="$emit('save')"
@@ -41,7 +41,7 @@
               >
                 {{ tag }}
               </button>
-              <span v-if="allTags.length === 0" class="gallery-tag-editor__empty">No existing tags</span>
+              <span v-if="allTags.length === 0" class="gallery-tag-editor__empty">暂无已有标签</span>
             </div>
           </div>
         </div>
@@ -49,10 +49,10 @@
 
       <ModalFooter>
         <Button size="sm" variant="outline" :disabled="isSaving" @click="$emit('clear')">
-          Clear
+          清空
         </Button>
         <Button size="sm" variant="primary" :disabled="isSaving" @click="$emit('save')">
-          {{ isSaving ? 'Saving...' : 'Save tags' }}
+          {{ isSaving ? '保存中...' : '保存标签' }}
         </Button>
       </ModalFooter>
     </template>

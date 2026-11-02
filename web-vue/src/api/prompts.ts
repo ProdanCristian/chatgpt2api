@@ -118,13 +118,13 @@ const PROMPT_SOURCE_SYNC_SUMMARY_TONES = new Set<PromptSourceSyncSummaryTone>([
 
 function validatePromptLibraryView(value: unknown): PromptLibraryView {
   if (!isRecord(value) || value.schema_version !== 1) {
-    throw new Error('Unsupported prompt library response version. Make sure the frontend and backend versions match.')
+    throw new Error('提示词库响应版本不受支持，请确认前后端版本一致。')
   }
   if (typeof value.revision !== 'string' || !value.revision) {
-    throw new Error('Prompt library response is missing revision.')
+    throw new Error('提示词库响应缺少 revision。')
   }
   if (!Array.isArray(value.items) || !Array.isArray(value.sources) || !Array.isArray(value.source_errors)) {
-    throw new Error('Prompt library response is missing items, sources, or source_errors.')
+    throw new Error('提示词库响应缺少 items、sources 或 source_errors。')
   }
 
   const counts: Array<[unknown, number, string]> = [
@@ -134,11 +134,11 @@ function validatePromptLibraryView(value: unknown): PromptLibraryView {
   ]
   for (const [actual, expected, field] of counts) {
     if (!isNonNegativeInteger(actual) || actual !== expected) {
-      throw new Error(`${field} in the prompt library response does not match the list.`)
+      throw new Error(`提示词库响应中的 ${field} 与列表不一致。`)
     }
   }
   if (!isNonNegativeInteger(value.enabled_source_count) || !isNonNegativeInteger(value.cached_source_count)) {
-    throw new Error('Invalid source count in the prompt library response.')
+    throw new Error('提示词库响应中的词源计数无效。')
   }
   if (
     !isRecord(value.sync_summary)
@@ -153,10 +153,10 @@ function validatePromptLibraryView(value: unknown): PromptLibraryView {
     || typeof value.sync_summary.message !== 'string'
     || !value.sync_summary.message.trim()
   ) {
-    throw new Error('Invalid sync summary in the prompt library response.')
+    throw new Error('提示词库响应中的同步摘要无效。')
   }
   if (!value.items.every((item) => isRecord(item) && typeof item.id === 'string' && typeof item.prompt === 'string')) {
-    throw new Error('Prompt library response contains an invalid prompt.')
+    throw new Error('提示词库响应包含无效提示词。')
   }
   if (!value.sources.every((source) => (
     isRecord(source)
@@ -167,7 +167,7 @@ function validatePromptLibraryView(value: unknown): PromptLibraryView {
     && typeof source.sync_message === 'string'
     && PROMPT_SOURCE_SYNC_TONES.has(source.sync_tone as PromptSourceSyncTone)
   ))) {
-    throw new Error('Prompt library response contains an invalid source.')
+    throw new Error('提示词库响应包含无效词源。')
   }
   return value as unknown as PromptLibraryView
 }

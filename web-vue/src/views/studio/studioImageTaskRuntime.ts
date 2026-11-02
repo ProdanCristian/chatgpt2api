@@ -66,7 +66,7 @@ export function useStudioImageTaskRuntime(input: StudioImageTaskRuntimeInput) {
       if (running > 0) {
         badges[conversationId] = {
           state: 'running',
-          label: `Processing ${running}`,
+          label: `处理中 ${running}`,
           count: running,
         }
       }
@@ -74,9 +74,9 @@ export function useStudioImageTaskRuntime(input: StudioImageTaskRuntimeInput) {
     Object.entries(input.conversationNotices.value).forEach(([conversationId, notice]) => {
       if (!validIds.has(conversationId) || badges[conversationId]) return
       if (notice === 'done') {
-        badges[conversationId] = { state: 'done', label: 'Done' }
+        badges[conversationId] = { state: 'done', label: '已完成' }
       } else if (notice === 'error') {
-        badges[conversationId] = { state: 'error', label: 'Failed' }
+        badges[conversationId] = { state: 'error', label: '失败' }
       }
     })
     return badges
@@ -108,7 +108,7 @@ export function useStudioImageTaskRuntime(input: StudioImageTaskRuntimeInput) {
       if (!message.taskId || !missing.has(message.taskId)) return
       if (message.status === 'done' || message.status === 'error') return
       message.status = 'error'
-      message.error = 'The image task has expired or does not exist'
+      message.error = '图片任务已过期或不存在'
       changedConversations.add(conversation)
       input.hooks.markConversationNotice(conversation.id, 'error')
     })
@@ -157,7 +157,7 @@ export function useStudioImageTaskRuntime(input: StudioImageTaskRuntimeInput) {
     },
     onRefreshSuccess: input.hooks.onRefreshSuccess,
     onRefreshError: (error) => {
-      input.hooks.onRefreshError(input.hooks.formatError(error, 'Failed to refresh image tasks'))
+      input.hooks.onRefreshError(input.hooks.formatError(error, '刷新图片任务失败'))
     },
   })
 
@@ -176,7 +176,7 @@ export function useStudioImageTaskRuntime(input: StudioImageTaskRuntimeInput) {
       taskPollingCoordinator.schedulePoll()
       return task
     } catch (error) {
-      input.hooks.onRefreshError(input.hooks.formatError(error, 'Failed to resume image tasks'))
+      input.hooks.onRefreshError(input.hooks.formatError(error, '继续图片任务失败'))
       return null
     }
   }

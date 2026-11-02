@@ -2,17 +2,17 @@
   <div class="space-y-5">
     <PageLoadingState
       v-if="!dashboardDataReady && !dashboardLoadError"
-      title="Loading overview"
-      description="Reading the latest account and call data."
+      title="正在加载概览"
+      description="读取最新账号和调用数据。"
     />
 
     <StateBlock
       v-else-if="!dashboardDataReady"
-      title="Failed to load overview"
+      title="概览加载失败"
       :description="dashboardLoadError"
     >
       <Button size="sm" variant="outline" root-class="mt-4" @click="retryDashboard">
-        Reload
+        重新加载
       </Button>
     </StateBlock>
 
@@ -27,7 +27,7 @@
     </div>
 
     <section
-      aria-label="Account overview"
+      aria-label="账号概览"
       class="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6"
     >
       <StatCard
@@ -42,7 +42,7 @@
     </section>
 
     <section
-      aria-label="Call overview"
+      aria-label="调用概览"
       class="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6"
     >
       <StatCard
@@ -57,10 +57,10 @@
 
     <section>
       <PagePanel class="!rounded-xl">
-        <PanelHeader title="Runtime environment" align="start" />
+        <PanelHeader title="运行环境" align="start" />
 
         <div class="mt-4 grid min-w-0 gap-5 xl:grid-cols-[minmax(20rem,0.9fr)_minmax(0,1.4fr)]">
-          <section class="min-w-0 xl:h-full" aria-label="Resource usage">
+          <section class="min-w-0 xl:h-full" aria-label="资源占用">
             <div class="grid grid-cols-2 gap-x-5 gap-y-5 xl:h-full xl:grid-rows-2 xl:gap-y-0">
               <div
                 v-for="metric in runtimeResourceMetrics"
@@ -77,7 +77,7 @@
                 <div
                   class="mt-2.5 h-1.5 overflow-hidden rounded-full bg-muted/70"
                   :role="metric.progress === null ? undefined : 'progressbar'"
-                  :aria-label="metric.progress === null ? undefined : `${metric.label} usage`"
+                  :aria-label="metric.progress === null ? undefined : `${metric.label}占用率`"
                   :aria-valuenow="metric.progress === null ? undefined : metric.progress"
                   :aria-valuemin="metric.progress === null ? undefined : 0"
                   :aria-valuemax="metric.progress === null ? undefined : 100"
@@ -95,7 +95,7 @@
 
           <section
             class="min-w-0 border-t border-border/60 pt-4 xl:border-l xl:border-t-0 xl:pl-5 xl:pt-0"
-            aria-label="Runtime info"
+            aria-label="运行信息"
           >
             <dl class="grid min-w-0 grid-cols-1 gap-x-6 sm:grid-cols-2">
               <div
@@ -116,28 +116,28 @@
     </section>
 
     <section class="grid grid-cols-1 gap-4">
-      <ChartCard title="Model request distribution">
+      <ChartCard title="模型请求分布">
         <template #title-extra>
-          <HelpTip text="Only successful and partially successful requests are counted." />
+          <HelpTip text="仅统计成功及部分成功请求。" />
         </template>
         <template #actions>
-          <TimeRangeTabs v-model="modelTimeRange" aria-label="Model request distribution time range" />
+          <TimeRangeTabs v-model="modelTimeRange" aria-label="模型请求分布时间范围" />
         </template>
         <div ref="modelChartRef" class="h-72 w-full px-2"></div>
       </ChartCard>
     </section>
 
     <section class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-      <ChartCard title="Call result trend">
+      <ChartCard title="调用结果趋势">
         <template #actions>
-          <TimeRangeTabs v-model="trendTimeRange" aria-label="Call result trend time range" />
+          <TimeRangeTabs v-model="trendTimeRange" aria-label="调用结果趋势时间范围" />
         </template>
         <div ref="trendChartRef" class="h-56 w-full"></div>
       </ChartCard>
 
-      <ChartCard title="Call activity">
+      <ChartCard title="调用活跃度">
         <template #actions>
-          <TimeRangeTabs v-model="activityTimeRange" aria-label="Call activity time range" />
+          <TimeRangeTabs v-model="activityTimeRange" aria-label="调用活跃度时间范围" />
         </template>
         <div class="flex h-56 items-center px-1">
           <div
@@ -185,33 +185,33 @@
             <div class="flex items-center justify-between text-[11px] text-muted-foreground">
               <span>{{ activityBuckets[0]?.label || '--' }}</span>
               <span class="flex items-center gap-1.5">
-                <span>Less</span>
+                <span>少</span>
                 <span class="h-2.5 w-2.5 rounded-[2px] bg-muted/60"></span>
                 <span class="h-2.5 w-2.5 rounded-[2px] bg-emerald-100 dark:bg-emerald-950/70"></span>
                 <span class="h-2.5 w-2.5 rounded-[2px] bg-emerald-200 dark:bg-emerald-900/70"></span>
                 <span class="h-2.5 w-2.5 rounded-[2px] bg-emerald-400 dark:bg-emerald-700"></span>
                 <span class="h-2.5 w-2.5 rounded-[2px] bg-emerald-600 dark:bg-emerald-500"></span>
-                <span>More</span>
+                <span>多</span>
               </span>
               <span>{{ activityBuckets[activityBuckets.length - 1]?.label || '--' }}</span>
             </div>
           </div>
           <p v-else class="w-full text-center text-sm text-muted-foreground" role="status">
-            No countable requests in the current range
+            当前范围内暂无可统计请求
           </p>
         </div>
       </ChartCard>
 
-      <ChartCard title="Success duration trend">
+      <ChartCard title="成功耗时趋势">
         <template #actions>
-          <TimeRangeTabs v-model="responseTimeTimeRange" aria-label="Success duration trend time range" />
+          <TimeRangeTabs v-model="responseTimeTimeRange" aria-label="成功耗时趋势时间范围" />
         </template>
         <div ref="responseTimeChartRef" class="h-56 w-full"></div>
       </ChartCard>
 
-      <ChartCard title="Model duration">
+      <ChartCard title="模型耗时">
         <template #actions>
-          <TimeRangeTabs v-model="modelResponseTimeTimeRange" aria-label="Model duration time range" />
+          <TimeRangeTabs v-model="modelResponseTimeTimeRange" aria-label="模型耗时时间范围" />
         </template>
         <div ref="modelResponseTimeChartRef" class="h-56 w-full"></div>
       </ChartCard>
@@ -266,37 +266,37 @@ const callStats = computed(() => {
   const switching = range?.switching
   return [
     {
-      label: 'Concurrent requests',
+      label: '当前并发',
       value: formatCount(dashboardOperations.value?.active_requests),
       icon: 'lucide:layers-3',
       iconTone: 'info' as const,
     },
     {
-      label: 'Total calls',
+      label: '总调用量',
       value: formatCount(totals?.total),
       icon: 'lucide:messages-square',
       iconTone: 'neutral' as const,
     },
     {
-      label: 'Success rate',
+      label: '成功率',
       value: formatPercent(totals?.success_rate),
       icon: 'lucide:circle-check',
       iconTone: 'success' as const,
     },
     {
-      label: 'Avg. success duration',
+      label: '平均成功耗时',
       value: formatRequestDuration(totals?.avg_success_duration_ms) || '--',
       icon: 'lucide:timer',
       iconTone: 'info' as const,
     },
     {
-      label: 'Account switches',
+      label: '触发切号',
       value: formatCount(switching?.requests),
       icon: 'lucide:repeat-2',
       iconTone: 'warning' as const,
     },
     {
-      label: 'Switch recovery rate',
+      label: '切换恢复率',
       value: formatPercent(switching?.recovery_rate),
       icon: 'lucide:shield-check',
       iconTone: 'success' as const,
@@ -324,7 +324,7 @@ const runtimeResourceMetrics = computed(() => {
   const runtime = dashboardRuntime.value
   return [
     {
-      label: 'App CPU',
+      label: '应用 CPU',
       value: formatPercent(runtime?.process_cpu_percent),
       icon: 'lucide:cpu',
       iconClass: 'text-sky-600 dark:text-sky-400',
@@ -332,7 +332,7 @@ const runtimeResourceMetrics = computed(() => {
       progressClass: 'text-sky-500 dark:text-sky-400',
     },
     {
-      label: 'App memory',
+      label: '应用内存',
       value: formatBytes(runtime?.process_memory_bytes),
       icon: 'lucide:memory-stick',
       iconClass: 'text-indigo-600 dark:text-indigo-400',
@@ -348,7 +348,7 @@ const runtimeResourceMetrics = computed(() => {
       progressClass: 'text-amber-500 dark:text-amber-400',
     },
     {
-      label: 'Data disk',
+      label: '数据盘',
       value: formatPercent(runtime?.storage_percent),
       icon: 'lucide:hard-drive',
       iconClass: 'text-muted-foreground',
@@ -362,7 +362,7 @@ const runtimeDetails = computed(() => {
   const runtime = dashboardRuntime.value
   return [
     {
-      label: 'Runtime mode',
+      label: '运行方式',
       value: runtime
         ? runtime.runtime_mode === 'docker'
           ? 'Docker'
@@ -370,44 +370,44 @@ const runtimeDetails = computed(() => {
         : '--',
       icon: 'lucide:server-cog',
     },
-    { label: 'App version', value: dashboardVersion.value, icon: 'lucide:tag' },
+    { label: '应用版本', value: dashboardVersion.value, icon: 'lucide:tag' },
     {
-      label: 'Instance name',
+      label: '实例名称',
       value: runtime?.instance_name || '--',
       icon: 'lucide:hard-drive',
     },
     {
-      label: 'OS distribution',
+      label: '系统发行版',
       value: runtime?.distribution || '--',
       icon: 'lucide:binary',
     },
     {
-      label: 'Kernel / architecture',
+      label: '内核 / 架构',
       value: runtime ? `${runtime.kernel_version} / ${runtime.architecture}` : '--',
       icon: 'lucide:binary',
     },
     {
-      label: 'CPU capacity',
+      label: 'CPU 容量',
       value: formatCpuCapacity(runtime?.cpu_capacity),
       icon: 'lucide:cpu',
     },
     {
-      label: 'Service started',
+      label: '服务启动',
       value: formatDateTime(runtime?.service_started_at),
       icon: 'lucide:clock-3',
     },
     {
-      label: 'Inbound rate',
+      label: '入站速率',
       value: formatRate(runtime?.network_rx_bytes_per_sec),
       icon: 'lucide:arrow-down-to-line',
     },
     {
-      label: 'Service uptime',
+      label: '服务运行',
       value: formatUptime(runtime?.service_uptime_seconds),
       icon: 'lucide:timer',
     },
     {
-      label: 'Outbound rate',
+      label: '出站速率',
       value: formatRate(runtime?.network_tx_bytes_per_sec),
       icon: 'lucide:arrow-up-from-line',
     },
@@ -416,7 +416,7 @@ const runtimeDetails = computed(() => {
 
 function formatCount(value: number | null | undefined) {
   if (value === null || value === undefined || !Number.isFinite(value)) return '--'
-  return Math.max(0, Math.trunc(value)).toLocaleString('en-US')
+  return Math.max(0, Math.trunc(value)).toLocaleString('zh-CN')
 }
 
 function formatPercent(value: number | null | undefined) {
@@ -442,13 +442,13 @@ function formatRate(value: number | null | undefined) {
 function formatCpuCapacity(value: number | null | undefined) {
   if (value === null || value === undefined || !Number.isFinite(value) || value <= 0) return '--'
   const digits = Number.isInteger(value) ? 0 : 2
-  return `${value.toLocaleString('en-US', { maximumFractionDigits: digits })} ${value === 1 ? 'core' : 'cores'}`
+  return `${value.toLocaleString('zh-CN', { maximumFractionDigits: digits })} 核`
 }
 
 function memoryScopeLabel(scope: 'container' | 'system' | 'visible' | undefined) {
-  if (scope === 'container') return 'Container memory'
-  if (scope === 'system') return 'System memory'
-  return 'Visible memory'
+  if (scope === 'container') return '容器内存'
+  if (scope === 'system') return '系统内存'
+  return '可见内存'
 }
 
 function formatUptime(value: number | null | undefined) {
@@ -457,9 +457,9 @@ function formatUptime(value: number | null | undefined) {
   const days = Math.floor(seconds / 86_400)
   const hours = Math.floor((seconds % 86_400) / 3_600)
   const minutes = Math.floor((seconds % 3_600) / 60)
-  if (days > 0) return `${days}d ${hours}h`
-  if (hours > 0) return `${hours}h ${minutes}m`
-  return `${minutes}m`
+  if (days > 0) return `${days}天 ${hours}小时`
+  if (hours > 0) return `${hours}小时 ${minutes}分`
+  return `${minutes}分`
 }
 
 function formatDateTime(value: string | null | undefined) {
@@ -478,28 +478,28 @@ function activityCellClass(value: number) {
 }
 
 function activityTooltip(bucket: DashboardBucket) {
-  return `${bucket.label} · Calls ${formatCount(bucket.total_calls)} · Success ${formatCount(bucket.success_calls)} · Failed ${formatCount(bucket.final_failed_calls)} · Success rate ${formatPercent(bucket.success_rate)}`
+  return `${bucket.label} · 调用 ${formatCount(bucket.total_calls)} · 成功 ${formatCount(bucket.success_calls)} · 失败 ${formatCount(bucket.final_failed_calls)} · 成功率 ${formatPercent(bucket.success_rate)}`
 }
 
 function activityTooltipItems(bucket: DashboardBucket) {
   return [
     {
-      label: 'Calls',
+      label: '调用',
       value: formatCount(bucket.total_calls),
       markerClass: 'bg-slate-500 dark:bg-slate-400',
     },
     {
-      label: 'Success',
+      label: '成功',
       value: formatCount(bucket.success_calls),
       markerClass: 'bg-emerald-500',
     },
     {
-      label: 'Failed',
+      label: '失败',
       value: formatCount(bucket.final_failed_calls),
       markerClass: 'bg-rose-500',
     },
     {
-      label: 'Success rate',
+      label: '成功率',
       value: formatPercent(bucket.success_rate),
       markerClass: 'bg-amber-500',
     },

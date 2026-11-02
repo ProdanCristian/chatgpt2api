@@ -142,17 +142,17 @@ export function accountStatusDetailText(
 ): string {
   return [
     item.status_reason,
-    `Account group: ${groupLabel(item.group_id)}`,
-    `Proxy: ${proxyText(item)}`,
+    `账号组：${groupLabel(item.group_id)}`,
+    `代理：${proxyText(item)}`,
   ].filter(Boolean).join('\n')
 }
 
 export function accountDetailItems(item: Account) {
   return [
-    { label: 'Created', value: accountCreatedText(item) },
-    { label: 'Restored', value: accountRestoreText(item) },
-    { label: 'Image quota', value: accountQuotaText(item) },
-    { label: 'Success / Failure', value: `${item.success_count || 0} / ${item.failure_count || 0}` },
+    { label: '创建时间', value: accountCreatedText(item) },
+    { label: '恢复时间', value: accountRestoreText(item) },
+    { label: '图片额度', value: accountQuotaText(item) },
+    { label: '成功 / 失败', value: `${item.success_count || 0} / ${item.failure_count || 0}` },
   ]
 }
 
@@ -162,7 +162,7 @@ export function accountGroupNameMap(groups: readonly AccountGroup[]): Map<string
 
 export function accountGroupLabel(groupId: string | undefined, groupNames: ReadonlyMap<string, string>): string {
   const id = cleanString(groupId)
-  if (!id) return 'Ungrouped'
+  if (!id) return '未分组'
   return groupNames.get(id) || id
 }
 

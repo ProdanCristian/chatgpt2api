@@ -9,19 +9,19 @@
       <div class="attempt-timeline__heading">
         <span class="attempt-timeline__title">
           <Icon icon="lucide:repeat-2" />
-          Generation attempts
+          生成尝试
         </span>
       </div>
       <div class="attempt-timeline__summary">
         <MetaChip v-if="resultRequestedCount" size="xs" tone="muted">
-          {{ resultRequestedCount }} {{ resultRequestedCount === 1 ? 'image' : 'images' }} · Success {{ resultSucceededCount }} · Failed {{ resultFailedCount }}
+          {{ resultRequestedCount }} 张 · 成功 {{ resultSucceededCount }} · 失败 {{ resultFailedCount }}
         </MetaChip>
-        <MetaChip size="xs" tone="muted">{{ attemptRows.length }} {{ attemptRows.length === 1 ? 'attempt' : 'attempts' }}</MetaChip>
+        <MetaChip size="xs" tone="muted">{{ attemptRows.length }} 次尝试</MetaChip>
         <MetaChip v-if="displaySwitchCount" size="xs" tone="warning">
-          {{ displaySwitchCount }} {{ displaySwitchCount === 1 ? 'switch' : 'switches' }}
+          切换 {{ displaySwitchCount }} 次
         </MetaChip>
         <span class="attempt-timeline__toggle-label">
-          {{ attemptsVisible ? 'Collapse' : 'Expand' }}
+          {{ attemptsVisible ? '收起' : '展开' }}
           <Icon
             icon="lucide:chevron-down"
             :class="{ 'attempt-timeline__chevron--open': attemptsVisible }"
@@ -65,7 +65,7 @@
             <div class="attempt-timeline__row">
               <div class="attempt-timeline__identity">
                 <div class="attempt-timeline__attempt-label">
-                  <strong>Attempt {{ attempt.attempt }}</strong>
+                  <strong>尝试 {{ attempt.attempt }}</strong>
                   <span v-if="attempt.presentation.switch_label" class="attempt-timeline__switch">
                     <Icon icon="lucide:repeat-2" />
                     {{ attempt.presentation.switch_label }}
@@ -73,7 +73,7 @@
                 </div>
                 <span class="attempt-timeline__account" :title="attempt.accountEmail">
                   <Icon icon="lucide:user-round" />
-                  {{ attempt.accountEmail || 'Account not recorded' }}
+                  {{ attempt.accountEmail || '账号未记录' }}
                 </span>
               </div>
               <div class="attempt-timeline__result">
@@ -103,26 +103,26 @@
                 class="attempt-timeline__error-details"
               >
                 <summary>
-                  <span>Error details</span>
+                  <span>错误详情</span>
                   <Icon icon="lucide:chevron-down" />
                 </summary>
                 <div class="attempt-timeline__error-content">
                   <div v-if="attempt.publicError" class="attempt-timeline__raw-error">
-                    <span>Public error</span>
+                    <span>对外错误</span>
                     <code>{{ attempt.publicError }}</code>
                   </div>
                   <div
                     v-if="attempt.upstreamError"
                     class="attempt-timeline__raw-error"
                   >
-                    <span>Upstream error</span>
+                    <span>上游错误</span>
                     <code>{{ attempt.upstreamError }}</code>
                   </div>
                   <div
                     v-if="attempt.upstreamText"
                     class="attempt-timeline__raw-error"
                   >
-                    <span>Upstream text</span>
+                    <span>上游文本</span>
                     <code>{{ attempt.upstreamText }}</code>
                   </div>
                 </div>
@@ -134,14 +134,14 @@
                 v-if="attempt.timelineSegments.length || attempt.timelineGroups.length"
                 class="attempt-timeline__breakdown-header"
               >
-                <span>Step timings</span>
+                <span>步骤耗时</span>
               </div>
               <RequestTimelineBreakdown
                 :segments="attempt.timelineSegments"
                 :legend-items="attempt.legendItems"
                 :groups="attempt.timelineGroups"
                 :details-visible="isAttemptDetailsVisible(attempt.key)"
-                empty-message="No step timings were recorded for this attempt."
+                empty-message="这次尝试没有步骤耗时记录。"
                 @toggle-details="toggleAttemptDetails(attempt.key)"
               />
             </div>

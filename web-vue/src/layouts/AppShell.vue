@@ -5,7 +5,7 @@
         v-if="routeProgressPhase !== 'idle'"
         class="shell-route-progress pointer-events-none fixed inset-x-0 top-0 z-[70] h-0.5 overflow-hidden"
         role="progressbar"
-        aria-label="Loading page"
+        aria-label="页面加载中"
       >
         <div
           class="shell-route-progress-bar h-full w-full bg-primary"
@@ -58,7 +58,7 @@
 
         <nav id="app-sidebar-navigation" class="sidebar-nav-scroll min-h-0 flex-1 overflow-x-hidden overflow-y-auto px-2 pb-2 pt-3 lg:pt-4">
           <p class="shell-sidebar-section-label sidebar-section-label px-3 text-xs uppercase tracking-[0.28em] text-muted-foreground">
-            Navigation
+            导航
           </p>
           <div class="space-y-1">
             <RouterLink
@@ -105,10 +105,10 @@
               variant="outline"
               :icon-only="isSidebarRail"
               root-class="sidebar-logout shell-sidebar-footer-button rounded-full text-muted-foreground"
-              aria-label="Log out"
+              aria-label="退出登录"
               @click="handleLogout"
             >
-              <Tooltip v-if="isSidebarRail" text="Log out" placement="right">
+              <Tooltip v-if="isSidebarRail" text="退出登录" placement="right">
                 <span class="sidebar-footer-tooltip-trigger">
                   <svg aria-hidden="true" viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M10 17l5-5-5-5" />
@@ -117,7 +117,7 @@
                   </svg>
                 </span>
               </Tooltip>
-              <span class="sidebar-label sidebar-logout-label">Log out</span>
+              <span class="sidebar-label sidebar-logout-label">退出登录</span>
             </Button>
             <Button
               v-if="!isImmersivePage"
@@ -126,11 +126,11 @@
               icon-only
               root-class="sidebar-collapse-button shell-sidebar-footer-button shrink-0 rounded-full text-muted-foreground"
               @click="isSidebarCollapsed = !isSidebarCollapsed"
-              :aria-label="isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'"
+              :aria-label="isSidebarCollapsed ? '展开侧边栏' : '收起侧边栏'"
               :aria-expanded="!isSidebarCollapsed"
               aria-controls="app-sidebar-navigation"
             >
-              <Tooltip v-if="isSidebarRail" :text="isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'" placement="right">
+              <Tooltip v-if="isSidebarRail" :text="isSidebarCollapsed ? '展开侧边栏' : '收起侧边栏'" placement="right">
                 <span class="sidebar-footer-tooltip-trigger">
                   <svg aria-hidden="true" viewBox="0 0 24 24" class="h-4 w-4 shrink-0" fill="currentColor">
                     <path d="M6 4h2v16H6V4zm4 4h8v2h-8V8zm0 6h8v2h-8v-2z" />
@@ -167,7 +167,7 @@
               icon-only
               root-class="lg:hidden"
               @click="openSidebar"
-              aria-label="Open navigation"
+              aria-label="打开导航"
               :aria-expanded="isMobileViewport && isSidebarOpen"
               aria-controls="app-sidebar-navigation"
             >
@@ -223,71 +223,71 @@
                 </Button>
               </Tooltip>
               <span v-if="canvasHref" class="hidden lg:inline-flex">
-                <Tooltip text="Open infinite canvas" placement="bottom">
+                <Tooltip text="打开无限画布" placement="bottom">
                   <Button
                     size="sm"
                     variant="outline"
-                    aria-label="Open infinite canvas"
+                    aria-label="打开无限画布"
                     @click="openInfiniteCanvas"
                   >
-                    Canvas
+                    画布
                   </Button>
                 </Tooltip>
               </span>
-              <Tooltip text="Refresh current page" placement="bottom">
+              <Tooltip text="刷新当前页面" placement="bottom">
                 <Button
                   size="sm"
                   variant="outline"
-                  aria-label="Refresh current page"
+                  aria-label="刷新当前页面"
                   @click="refreshPage"
                 >
-                  Refresh
+                  刷新
                 </Button>
               </Tooltip>
             </div>
             <div class="flex items-center gap-[8px]">
               <span v-if="authStore.isAdmin" class="hidden lg:inline-flex">
-                <Tooltip text="View API info" placement="bottom">
+                <Tooltip text="查看接口信息" placement="bottom">
                   <Button
                     size="sm"
                     variant="outline"
-                    aria-label="View API info"
+                    aria-label="查看接口信息"
                     @click="openApiInfo"
                   >
-                    API
+                    接口
                   </Button>
                 </Tooltip>
               </span>
               <span class="hidden lg:inline-flex">
-                <Tooltip text="Community and services" placement="bottom">
+                <Tooltip text="交流与服务" placement="bottom">
                   <Button
                     size="sm"
                     variant="outline"
-                    aria-label="Community and services"
+                    aria-label="交流与服务"
                     @click="isServiceDialogOpen = true"
                   >
-                    Services
+                    服务
                   </Button>
                 </Tooltip>
               </span>
               <span v-if="authStore.isAdmin" class="hidden lg:inline-flex">
-                <Tooltip :text="`View version updates, current ${currentVersionLabel || 'unknown version'}`" placement="bottom">
+                <Tooltip :text="`查看版本更新，当前 ${currentVersionLabel || '版本未知'}`" placement="bottom">
                   <Button
                     size="sm"
                     variant="outline"
                     :root-class="hasNewVersion
                       ? '!border-amber-400/70 !bg-amber-50 !text-amber-800 hover:!border-amber-500 hover:!bg-amber-100 hover:!text-amber-900 dark:!border-amber-500/60 dark:!bg-amber-950/35 dark:!text-amber-300 dark:hover:!border-amber-400 dark:hover:!bg-amber-950/55 dark:hover:!text-amber-200'
                       : ''"
-                    aria-label="View version updates"
+                    aria-label="查看版本更新"
                     @click="openUpdateDialog"
                   >
-                    {{ currentVersionLabel || 'Version' }}
+                    {{ currentVersionLabel || '版本' }}
                   </Button>
                 </Tooltip>
               </span>
               <span v-if="mobileHeaderMenuItems.length" class="inline-flex lg:hidden">
                 <ActionMenu
-                  label="More"
+                  label="更多"
                   :items="mobileHeaderMenuItems"
                   size="sm"
                   placement="bottom"
@@ -333,7 +333,7 @@
               <template #fallback>
                 <PageLoadingState
                   :title="routePendingText"
-                  description="Preparing page content..."
+                  description="正在准备页面内容..."
                   compact
                 />
               </template>
@@ -357,11 +357,11 @@
       :z-index="100"
       panel-class="w-full p-5"
       close-on-backdrop
-      aria-label="Community and services"
+      aria-label="交流与服务"
       @close="isServiceDialogOpen = false"
     >
       <ModalHeader
-        title="Community and services"
+        title="交流与服务"
         title-class="ui-subsection-title"
         :bordered="false"
         flush
@@ -397,8 +397,8 @@
       @close="isApiInfoOpen = false"
     >
           <ModalHeader
-            title="API endpoints"
-            subtitle="Choose the endpoint that matches your client"
+            title="API 接口"
+            subtitle="根据客户端选择对应接口"
             title-class="ui-subsection-title"
             :bordered="false"
             flush
@@ -407,7 +407,7 @@
 
           <div class="mt-4 space-y-3 text-sm">
             <div>
-              <p class="text-xs text-muted-foreground">Base endpoint</p>
+              <p class="text-xs text-muted-foreground">基础端点</p>
               <div class="mt-1 flex items-start gap-2">
                 <ValueSurface
                   tag="p"
@@ -423,12 +423,12 @@
                   root-class="shrink-0 text-[11px] text-muted-foreground"
                   @click="copyText(apiBaseUrl)"
                 >
-                  Copy
+                  复制
                 </Button>
               </div>
             </div>
             <div>
-              <p class="text-xs text-muted-foreground">SDK endpoint</p>
+              <p class="text-xs text-muted-foreground">SDK 接口</p>
               <div class="mt-1 flex items-start gap-2">
                 <ValueSurface
                   tag="p"
@@ -444,15 +444,15 @@
                   root-class="shrink-0 text-[11px] text-muted-foreground"
                   @click="copyText(apiSdkUrl)"
                 >
-                  Copy
+                  复制
                 </Button>
               </div>
             </div>
             <div>
-              <p class="text-xs text-muted-foreground">Supported models</p>
+              <p class="text-xs text-muted-foreground">支持模型</p>
               <div class="mt-1 space-y-3 rounded-2xl border border-border bg-background px-3 py-2 text-xs text-muted-foreground">
                 <div>
-                  <p class="mb-1 text-[11px] text-muted-foreground">Chat models</p>
+                  <p class="mb-1 text-[11px] text-muted-foreground">聊天模型</p>
                   <div class="flex flex-wrap gap-2 text-foreground">
                     <MetaChip
                       v-for="model in supportedChatModels"
@@ -464,7 +464,7 @@
                   </div>
                 </div>
                 <div>
-                  <p class="mb-1 text-[11px] text-muted-foreground">Image models</p>
+                  <p class="mb-1 text-[11px] text-muted-foreground">图片模型</p>
                 <div class="flex flex-wrap gap-2 text-foreground">
                   <MetaChip
                     v-for="model in supportedImageModels"
@@ -478,7 +478,7 @@
               </div>
             </div>
             <div>
-              <p class="text-xs text-muted-foreground">Current API key</p>
+              <p class="text-xs text-muted-foreground">当前调用密钥</p>
               <div class="mt-1 flex items-start gap-2">
                 <ValueSurface
                   tag="p"
@@ -495,11 +495,11 @@
                   :disabled="!currentAuthToken"
                   @click="copyText(apiKeyDisplay)"
                 >
-                  Copy
+                  复制
                 </Button>
               </div>
               <p class="mt-1 text-[11px] text-muted-foreground">
-                Request header: Authorization: Bearer &lt;current API key&gt;.
+                请求头使用 Authorization: Bearer &lt;当前调用密钥&gt;。
               </p>
             </div>
           </div>
@@ -511,7 +511,7 @@
               root-class="min-w-14 justify-center"
               @click="isApiInfoOpen = false"
             >
-              Got it
+              知道了
             </Button>
           </ModalFooter>
     </ModalShell>
@@ -523,8 +523,8 @@
       @close="closeUpdateDialog"
     >
       <ModalHeader
-        title="Version updates"
-        subtitle="View the current version and changelog"
+        title="版本更新"
+        subtitle="查看当前版本和更新日志"
         title-class="ui-subsection-title"
         :bordered="false"
         flush
@@ -533,19 +533,19 @@
 
       <div class="mt-4 grid gap-3 sm:grid-cols-2">
         <div class="rounded-2xl border border-border bg-background px-4 py-3">
-          <p class="text-xs text-muted-foreground">Current version</p>
+          <p class="text-xs text-muted-foreground">当前版本</p>
           <p class="mt-1 text-base font-semibold text-foreground">{{ currentVersionLabel }}</p>
         </div>
         <div class="rounded-2xl border border-border bg-background px-4 py-3">
           <div class="flex items-center justify-between gap-3">
-            <p class="text-xs text-muted-foreground">Latest version</p>
+            <p class="text-xs text-muted-foreground">最新版本</p>
             <button
               type="button"
               class="text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline disabled:cursor-not-allowed disabled:opacity-60"
               :disabled="isCheckingUpdate"
               @click="checkForUpdates(true)"
             >
-              {{ isCheckingUpdate ? 'Checking...' : 'Check for updates' }}
+              {{ isCheckingUpdate ? '检查中...' : '检查更新' }}
             </button>
           </div>
           <p
@@ -581,7 +581,7 @@
         >
           <div class="flex flex-wrap items-center gap-2">
             <span class="text-sm font-semibold text-foreground">
-              {{ release.version === 'Unreleased' ? 'Unreleased' : release.version }}
+              {{ release.version === 'Unreleased' ? '未发布' : release.version }}
             </span>
             <span v-if="release.date" class="text-xs text-muted-foreground">{{ release.date }}</span>
             <MetaChip
@@ -590,14 +590,14 @@
               tone="success"
               strong
             >
-              Latest
+              最新
             </MetaChip>
             <MetaChip
               v-if="normalizeVersionTag(release.version) === currentVersionLabel"
               size="xs"
               tone="muted"
             >
-              Current
+              当前
             </MetaChip>
           </div>
           <div class="mt-2 space-y-1.5">
@@ -630,7 +630,7 @@
           </div>
         </div>
         <div v-if="!releaseEntries.length" class="rounded-2xl border border-dashed border-border bg-muted/30 px-4 py-6 text-center text-sm text-muted-foreground">
-          No changelog available.
+          暂无更新日志。
         </div>
       </div>
 
@@ -640,7 +640,7 @@
           variant="outline"
           @click="openReleasePage"
         >
-          Open release page
+          打开发布页
         </Button>
         <Button
           size="xs"
@@ -648,7 +648,7 @@
           root-class="min-w-14 justify-center"
           @click="closeUpdateDialog"
         >
-          Got it
+          知道了
         </Button>
         <Button
           v-if="canStartUpdate"
@@ -657,7 +657,7 @@
           :disabled="updateProgressState.busy || isUpdateConfirming"
           @click="startUpdate"
         >
-          {{ isUpdateConfirming ? 'Waiting for confirmation' : 'Update now' }}
+          {{ isUpdateConfirming ? '等待确认' : '立即更新' }}
         </Button>
       </ModalFooter>
     </ModalShell>
@@ -759,9 +759,9 @@ const routeProgressPhase = ref<RouteProgressPhase>('idle')
 const cachedRouteNames = ['Dashboard', 'Studio', 'Accounts', 'Logs', 'Monitor', 'Gallery', 'Proxy', 'Settings']
 const cachedRouteMax = cachedRouteNames.length
 const themeOptions: { label: string; value: ThemeMode }[] = [
-  { label: 'Light', value: 'light' },
-  { label: 'Dark', value: 'dark' },
-  { label: 'System', value: 'system' },
+  { label: '浅色', value: 'light' },
+  { label: '深色', value: 'dark' },
+  { label: '系统', value: 'system' },
 ]
 const {
   chatModels: supportedChatModels,
@@ -784,63 +784,63 @@ type NavigationItem = {
 const menuItems: NavigationItem[] = [
   {
     path: '/',
-    label: 'Overview',
+    label: '概览中心',
     icon: 'M4 4h7v7H4V4zm9 0h7v4h-7V4zm0 6h7v10h-7V10zM4 13h7v7H4v-7z',
     capability: 'admin_console',
   },
   {
     path: '/monitor',
-    label: 'Live Monitor',
+    label: '实时监控',
     icon: 'M4 5h3v14H4V5zm5 6h3v8H9v-8zm5-4h3v12h-3V7zm5 7h3v5h-3v-5z',
     capability: 'admin_console',
   },
   {
     path: '/studio',
-    label: 'Chat & Image Studio',
+    label: '对话画图',
     icon: 'M5 4h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-5l-4 4v-4H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm1 3v6h12V7H6zm2 2 2.1 2.8 2.4-3.1L17 14H7l1-5z',
     capability: 'studio',
   },
   {
     path: '/accounts',
-    label: 'Accounts',
+    label: '账号管理',
     icon: 'M12 12a3.5 3.5 0 1 0-3.5-3.5A3.5 3.5 0 0 0 12 12zm0 2c-4.1 0-7.5 2.2-7.5 5v1h15v-1c0-2.8-3.4-5-7.5-5z',
     capability: 'admin_console',
   },
   {
     path: '/logs',
-    label: 'Logs',
+    label: '日志管理',
     icon: 'M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h10v2H4v-2z',
     capability: 'admin_console',
   },
   {
     path: '/gallery',
-    label: 'Gallery',
+    label: '图片管理',
     icon: 'M22 16V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2zm-11-4 2.03 2.71L16 11l4 5H8l3-3zM2 6v14a2 2 0 0 0 2 2h14v-2H4V6H2z',
     capability: 'admin_console',
   },
   {
     path: '/proxy',
-    label: 'Proxies',
+    label: '代理管理',
     icon: 'M12 3a5 5 0 0 1 5 5v2h1a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-5a3 3 0 0 1 3-3h1V8a5 5 0 0 1 5-5zm-3 7h6V8a3 3 0 0 0-6 0v2zm-3 2a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1H6z',
     capability: 'admin_console',
   },
   {
     path: '/settings',
-    label: 'Settings',
+    label: '系统设置',
     icon: 'M4 6h10v2H4V6zm12 0h4v2h-4V6zM4 11h6v2H4v-2zm8 0h8v2h-8v-2zM4 16h10v2H4v-2zm12 0h4v2h-4v-2z',
     capability: 'admin_console',
   },
 ]
 
 const routeTitleMap: Record<string, string> = {
-  dashboard: 'Overview',
-  accounts: 'Accounts',
-  logs: 'Logs',
-  gallery: 'Gallery',
-  proxy: 'Proxies',
-  settings: 'Settings',
-  monitor: 'Live Monitor',
-  studio: 'Chat & Image Studio',
+  dashboard: '概览中心',
+  accounts: '账号管理',
+  logs: '日志管理',
+  gallery: '图片管理',
+  proxy: '代理管理',
+  settings: '系统设置',
+  monitor: '实时监控',
+  studio: '对话画图',
 }
 
 const visibleMenuItems = computed(() => {
@@ -850,7 +850,7 @@ const visibleMenuItems = computed(() => {
 const currentPageTitle = computed(() => {
   const routeName = String(route.name || '')
   const item = visibleMenuItems.value.find(item => isNavActive(item.path))
-  return item?.label || routeTitleMap[routeName] || 'Overview'
+  return item?.label || routeTitleMap[routeName] || '概览中心'
 })
 
 const isImmersivePage = computed(() => Boolean(route.meta.immersive))
@@ -925,7 +925,7 @@ const navIconClassMap = computed<Record<string, string>>(() => {
 
 
 const apiSdkUrl = computed(() => `${apiBaseUrl.value}/v1`)
-const apiKeyDisplay = computed(() => currentAuthToken.value || 'Not logged in')
+const apiKeyDisplay = computed(() => currentAuthToken.value || '未登录')
 const currentVersionLabel = computed(() => normalizeVersionTag(
   updateStatus.value?.current_tag || currentVersionTag.value || '',
 ))
@@ -937,13 +937,13 @@ const canStartUpdate = computed(() => updateStatus.value?.can_update === true &&
 const updateProgressSummary = computed(() => [
   {
     key: 'current-version',
-    label: 'Current version',
-    value: currentVersionLabel.value || 'Unknown',
+    label: '当前版本',
+    value: currentVersionLabel.value || '未知',
   },
   {
     key: 'target-version',
-    label: 'Target version',
-    value: updateTargetTag.value || latestVersionLabel.value || 'Unknown',
+    label: '目标版本',
+    value: updateTargetTag.value || latestVersionLabel.value || '未知',
   },
 ])
 const updateCheckMessage = computed(() => {
@@ -957,9 +957,9 @@ const updateCheckMessageClass = computed(() => {
   return 'border-border bg-muted/40 text-muted-foreground'
 })
 const updateCheckBadgeText = computed(() => {
-  if (isCheckingUpdate.value) return 'Checking'
-  if (updateRequestError.value) return 'Request failed'
-  return updateStatus.value?.status_label || 'Not checked'
+  if (isCheckingUpdate.value) return '检查中'
+  if (updateRequestError.value) return '请求失败'
+  return updateStatus.value?.status_label || '未检查'
 })
 const updateCheckBadgeTone = computed(() => {
   if (isCheckingUpdate.value) return 'info'
@@ -981,8 +981,8 @@ const canvasHref = computed(() => {
   if (!canvas?.enabled || !canvas.url.trim() || !token) return ''
   return buildThirdPartyHref(canvas.url, apiBaseUrl.value, token)
 })
-const themeButtonText = computed(() => themeOptions.find(option => option.value === themeMode.value)?.label || 'System')
-const themeButtonTitle = computed(() => `Current theme: ${themeButtonText.value}. Click to switch`)
+const themeButtonText = computed(() => themeOptions.find(option => option.value === themeMode.value)?.label || '系统')
+const themeButtonTitle = computed(() => `当前主题：${themeButtonText.value}，点击切换`)
 type HeaderServiceItem = {
   key: string
   label: string
@@ -994,20 +994,20 @@ type HeaderServiceItem = {
 const headerServiceItems: HeaderServiceItem[] = [
   {
     key: 'service-qq',
-    label: 'QQ group: 1005859624',
+    label: 'QQ 交流群：1005859624',
     href: 'https://qm.qq.com/q/yegwCqJisS',
     icon: 'lucide:messages-square',
   },
   {
     key: 'service-account',
-    label: 'Buy image-generation accounts',
+    label: '购买生图账号',
     href: 'https://pay.ldxp.cn/shop/yukkcat',
     icon: 'lucide:shopping-bag',
   },
   {
     key: 'service-api',
-    label: 'Image generation API',
-    detail: 'Small volume ¥0.02/image · Relay ¥0.01/image · Bulk/enterprise ¥0.009/image',
+    label: '生图 API',
+    detail: '小量 ¥0.02/张 · 中转 ¥0.01/张 · 大量/企业 ¥0.009/张',
     href: 'https://api.klong.lat',
     icon: 'lucide:badge-dollar-sign',
   },
@@ -1015,17 +1015,17 @@ const headerServiceItems: HeaderServiceItem[] = [
 
 const mobileHeaderMenuItems = computed<ActionMenuItem[]>(() => {
   const items: ActionMenuItem[] = []
-  if (canvasHref.value) items.push({ key: 'canvas', label: 'Infinite canvas' })
+  if (canvasHref.value) items.push({ key: 'canvas', label: '无限画布' })
   if (authStore.isAdmin) {
     items.push(
-      { key: 'api-info', label: 'API info' },
-      { key: 'updates', label: 'Version updates' },
+      { key: 'api-info', label: '接口信息' },
+      { key: 'updates', label: '版本更新' },
     )
   }
-  items.push({ key: 'services', label: 'Community and services', dividerBefore: items.length > 0 })
+  items.push({ key: 'services', label: '交流与服务', dividerBefore: items.length > 0 })
   return items
 })
-const routePendingText = computed(() => `Loading ${currentPageTitle.value}`)
+const routePendingText = computed(() => `正在加载${currentPageTitle.value}`)
 let systemThemeMedia: MediaQueryList | null = null
 let viewportMedia: MediaQueryList | null = null
 const prefetchedRoutePaths = new Set<string>()
@@ -1035,7 +1035,7 @@ let routeProgressDelayTimer: number | null = null
 let routeProgressFinishTimer: number | null = null
 const defaultReleasePageUrl = 'https://github.com/yukkcat/chatgpt2api/releases'
 const releasePageUrl = computed(() => updateStatus.value?.release_url || defaultReleasePageUrl)
-const updateCheckingMessage = 'Checking the cloud version...'
+const updateCheckingMessage = '正在检查云端版本...'
 const updateTaskPollIntervalMs = 1000
 let updateTaskPollTimer: number | null = null
 let updateReloadScheduled = false
@@ -1162,20 +1162,20 @@ async function copyText(value: string) {
   if (!text) return
   try {
     await writeClipboardText(text)
-    toast.success('Copied')
+    toast.success('已复制')
   } catch (error) {
     console.error('Copy failed', error)
-    toast.error('Copy failed. Please copy it manually.')
+    toast.error('复制失败，请手动复制')
   }
 }
 
 async function openInfiniteCanvas() {
   if (!canvasHref.value) return
   const ok = await confirmDialog.ask({
-    title: 'Open infinite canvas',
-    message: 'This will open an external canvas and pass along the current API endpoint and API key. Continue?',
-    confirmText: 'Open',
-    cancelText: 'Cancel',
+    title: '打开无限画布',
+    message: '即将打开外部画布，并附带当前接口地址和当前调用密钥。是否继续？',
+    confirmText: '打开',
+    cancelText: '取消',
   })
   if (ok) {
     window.open(canvasHref.value, '_blank', 'noopener,noreferrer')
@@ -1239,8 +1239,8 @@ function applyUpdateTask(task: UpdateTaskResponse, open: boolean) {
   updateTargetTag.value = normalizeVersionTag(task.latest_tag || updateTargetTag.value)
   currentVersionTag.value = normalizeVersionTag(task.current_tag || currentVersionTag.value)
   updateProgressState.open = open
-  updateProgressState.title = task.busy ? 'Updating ChatGPT2API' : 'ChatGPT2API update'
-  updateProgressState.subtitle = task.latest_tag ? `Target version ${normalizeVersionTag(task.latest_tag)}` : ''
+  updateProgressState.title = task.busy ? '正在更新 ChatGPT2API' : 'ChatGPT2API 更新'
+  updateProgressState.subtitle = task.latest_tag ? `目标版本 ${normalizeVersionTag(task.latest_tag)}` : ''
   updateProgressState.total = task.total
   updateProgressState.current = task.current
   updateProgressState.statusLabel = task.status_label
@@ -1273,10 +1273,10 @@ async function startUpdate() {
   let confirmed = false
   try {
     confirmed = await confirmDialog.ask({
-      title: 'Confirm update',
-      message: `A new version ${targetTag} was found; the current version is ${currentVersionLabel.value || 'unknown'}. After you confirm, the update will be downloaded and installed, and the service will restart automatically. This usually takes 30 seconds to 2 minutes.`,
-      confirmText: 'Update now',
-      cancelText: 'Cancel',
+      title: '确认更新',
+      message: `检测到新版本 ${targetTag}，当前版本为 ${currentVersionLabel.value || '版本未知'}。确认后将下载并安装更新，服务会自动重启，通常需要 30 秒至 2 分钟。`,
+      confirmText: '立即更新',
+      cancelText: '取消',
     })
   } finally {
     isUpdateConfirming.value = false
@@ -1294,7 +1294,7 @@ async function startUpdate() {
     if (task.busy) scheduleUpdateTaskPoll()
     else await checkForUpdates(false)
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Online update failed. Please try again later.'
+    const message = error instanceof Error ? error.message : '在线更新失败，请稍后重试。'
     toast.error(message)
   }
 }
@@ -1354,7 +1354,7 @@ async function checkForUpdates(showMessage = true, openAvailable = false) {
       else toast.success(result.status_message)
     }
   } catch {
-    updateRequestError.value = 'Unable to reach the backend to check for updates. Please try again later.'
+    updateRequestError.value = '无法连接后端检查更新，请稍后重试。'
     if (showMessage) toast.warning(updateRequestError.value)
   } finally {
     isCheckingUpdate.value = false

@@ -3,8 +3,8 @@
     <template v-if="mode === 'canvas'">
       <div class="grid items-start gap-4 lg:grid-cols-2">
         <FormSection
-          title="Infinite canvas"
-          subtitle="When enabled, the top navigation shows a canvas entry and automatically carries the current API address and key."
+          title="无限画布"
+          subtitle="开启后顶部导航会显示画布入口，并自动带上当前接口地址和密钥。"
         >
           <div class="settings-check-grid settings-check-grid--single">
             <div class="settings-check-item">
@@ -13,12 +13,12 @@
                   v-model="settings.third_party_apps.infinite_canvas.enabled"
                   :disabled="fieldReadOnly('third_party_apps.infinite_canvas.enabled')"
                 >
-                  Enable infinite canvas entry
+                  启用无限画布入口
                 </Checkbox>
               </div>
             </div>
           </div>
-          <FormField label="Infinite canvas URL">
+          <FormField label="无限画布地址">
             <Input
               v-model.trim="settings.third_party_apps.infinite_canvas.url"
               block
@@ -29,8 +29,8 @@
         </FormSection>
 
         <FormSection
-          title="GenBox image push"
-          subtitle="Configure manual Push from the gallery, and automatic push after Studio generation succeeds."
+          title="GenBox 图片推送"
+          subtitle="配置图库手动 Push，以及 Studio 生成成功后的自动推送。"
         >
           <div class="settings-check-grid">
             <div class="settings-check-item">
@@ -39,7 +39,7 @@
                   v-model="settings.genbox_push.enabled"
                   :disabled="fieldReadOnly('genbox_push.enabled')"
                 >
-                  Enable GenBox Push
+                  启用 GenBox Push
                 </Checkbox>
               </div>
             </div>
@@ -49,13 +49,13 @@
                   v-model="settings.genbox_push.auto_push_after_studio"
                   :disabled="!settings.genbox_push.enabled || fieldReadOnly('genbox_push.auto_push_after_studio')"
                 >
-                  Auto-push after Studio succeeds
+                  Studio 成功后自动推送
                 </Checkbox>
               </div>
             </div>
           </div>
 
-          <FormField label="GenBox URL">
+          <FormField label="GenBox 地址">
             <Input
               v-model.trim="settings.genbox_push.base_url"
               block
@@ -65,7 +65,7 @@
           </FormField>
 
           <div class="grid grid-cols-1 gap-2.5 md:grid-cols-2">
-            <FormField label="Source ID">
+            <FormField label="来源 ID">
               <Input
                 v-model.trim="settings.genbox_push.source_id"
                 block
@@ -74,7 +74,7 @@
               />
             </FormField>
 
-            <FormField label="Request timeout (seconds)">
+            <FormField label="请求超时（秒）">
               <SettingsNumberInput :field="genboxTimeoutSecondsField" />
             </FormField>
           </div>
@@ -85,7 +85,7 @@
               type="password"
               block
               :disabled="fieldReadOnly('genbox_push.push_key')"
-              :placeholder="settings.genbox_push.has_push_key ? 'Configured; leave blank to keep unchanged' : 'Enter the GenBox Push Key'"
+              :placeholder="settings.genbox_push.has_push_key ? '已配置，留空不修改' : '请输入 GenBox Push Key'"
             />
           </FormField>
         </FormSection>
@@ -93,7 +93,7 @@
     </template>
 
     <template v-else>
-      <FormSection title="API access" subtitle="Third-party apps connect through the OpenAI-compatible API and use the same Bearer authentication.">
+      <FormSection title="接口接入" subtitle="第三方应用按 OpenAI 兼容接口接入，使用同一套 Bearer 鉴权。">
         <div class="grid gap-3 md:grid-cols-2">
           <SurfaceBox
             v-for="item in accessItems"
@@ -106,7 +106,7 @@
         </div>
       </FormSection>
 
-      <FormSection title="Common endpoints">
+      <FormSection title="常用接口">
         <div class="space-y-2">
           <details
             v-for="item in apiDocItems"
@@ -118,7 +118,7 @@
                 <span class="block text-sm font-medium text-foreground">{{ item.title }}</span>
                 <span class="mt-1 block truncate font-mono text-xs text-muted-foreground">{{ item.method }} {{ item.path }}</span>
               </span>
-              <span class="text-xs text-muted-foreground">Expand</span>
+              <span class="text-xs text-muted-foreground">展开</span>
             </summary>
             <div class="mt-3 space-y-2">
               <p class="text-xs leading-5 text-muted-foreground">{{ item.description }}</p>
@@ -156,12 +156,12 @@ const fieldReadOnly = (path: string) => settingsFieldReadOnly(props.fields, path
 
 const serviceBaseUrl = computed(() => window.location.origin)
 const openAIBaseUrl = computed(() => `${serviceBaseUrl.value.replace(/\/$/, '')}/v1`)
-const currentApiKey = computed(() => getAuthToken() || '<current key>')
+const currentApiKey = computed(() => getAuthToken() || '<当前密钥>')
 const accessItems = computed(() => [
-  { label: 'Service URL', value: serviceBaseUrl.value },
-  { label: 'Base URL (OpenAI)', value: openAIBaseUrl.value },
+  { label: '服务地址', value: serviceBaseUrl.value },
+  { label: 'Base URL（OpenAI）', value: openAIBaseUrl.value },
   { label: 'API Key', value: currentApiKey.value },
-  { label: 'Request header', value: `Authorization: Bearer ${currentApiKey.value}` },
+  { label: '请求头', value: `Authorization: Bearer ${currentApiKey.value}` },
 ])
 const apiDocItems = computed(() => (
   props.mode === 'api-docs'

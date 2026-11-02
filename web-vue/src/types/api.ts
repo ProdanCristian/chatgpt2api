@@ -1,4 +1,4 @@
-// API type definitions
+// API 类型定义
 
 export type ProxyRuntimeClearanceMode = 'none' | 'manual' | 'flaresolverr'
 

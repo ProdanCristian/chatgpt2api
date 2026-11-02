@@ -75,7 +75,7 @@ export function useLogDetailRuntime(options: LogDetailRuntimeOptions) {
       selectedLog.value = item
     } catch (caught) {
       if (requestSequence !== detailRequestSequence || detailTargetId.value !== targetId) return
-      detailError.value = errorMessage(caught, 'Failed to load log details')
+      detailError.value = errorMessage(caught, '日志详情加载失败')
     } finally {
       if (requestSequence === detailRequestSequence && detailTargetId.value === targetId) {
         detailLoading.value = false

@@ -2,14 +2,14 @@
   <section class="studio-chat-panel" :class="{ 'is-fullscreen': fullscreen }">
     <div ref="scrollEl" class="studio-chat-scroll custom-scrollbar" @scroll="handleScroll">
       <div v-if="!displayedConversation || !displayedConversation.messages.length" class="studio-chat-empty">
-        <h1>Chat & Image Studio</h1>
-        <p>Type to chat directly. Switch to image mode to generate images, upload reference images, and keep editing in the same window.</p>
+        <h1>对话画图</h1>
+        <p>输入文字可以直接对话；切到画图后，在同一个窗口里生成图片、上传参考图和继续编辑。</p>
       </div>
 
       <div v-else ref="turnsEl" class="studio-turns">
         <div v-if="hiddenMessageCount > 0" class="studio-load-earlier-row">
           <button type="button" class="studio-load-earlier-button" @click="showOlderMessages">
-            Show earlier messages ({{ hiddenMessageCount }})
+            显示更早消息（{{ hiddenMessageCount }} 条）
           </button>
         </div>
 
@@ -34,8 +34,8 @@
       v-if="showScrollLatest"
       type="button"
       class="studio-scroll-latest"
-      aria-label="Scroll to latest message"
-      title="Scroll to latest message"
+      aria-label="滚动到最新消息"
+      title="滚动到最新消息"
       @click="scrollToBottom"
     >
       <Icon icon="lucide:arrow-down" class="h-5 w-5" />
@@ -169,7 +169,7 @@ function buildMessageView(message: StudioMessage): StudioMessageView {
     imageSlotCount,
     pendingSlots: Array.from({ length: pendingSlotCount }, (_, index) => pendingSlotStart + index),
     failedSlots: Array.from({ length: failedSlotCount }, (_, index) => failedSlotStart + index),
-    imagePendingStageText: task?.stage_label || 'Submitting',
+    imagePendingStageText: task?.stage_label || '正在提交',
     primaryMessage: task?.public_error || '',
     imagePreviewStyle: isImageMessage ? buildImagePreviewStyle(message, task, imageSlotCount, assets) : undefined,
     isCollapsible,

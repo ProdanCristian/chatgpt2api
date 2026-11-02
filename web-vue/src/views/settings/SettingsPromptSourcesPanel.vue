@@ -2,21 +2,21 @@
   <div class="settings-prompt-sources">
     <div class="settings-prompt-sources-head">
       <div>
-        <p class="ui-section-title">Prompt sources</p>
+        <p class="ui-section-title">提示词源</p>
         <p class="mt-1 text-xs text-muted-foreground">
-          Studio only reads the local snapshot; when updating, it downloads from
+          Studio 只读取本地快照；更新时从
           <a
             href="https://github.com/yukkcat/image-prompts"
             target="_blank"
             rel="noreferrer"
             class="font-medium text-foreground hover:underline"
           >yukkcat/image-prompts</a>
-          and overwrites the local snapshot.
+          下载并覆盖本地快照。
         </p>
       </div>
       <div class="settings-prompt-sources-actions">
         <Button size="sm" variant="primary" :disabled="mutationBusy || loading" @click="refreshAll">
-          {{ refreshing ? 'Updating...' : 'Update local snapshot' }}
+          {{ refreshing ? '更新中...' : '更新本地快照' }}
         </Button>
       </div>
     </div>
@@ -24,8 +24,8 @@
     <PageLoadingState
       v-if="loading && sources.length === 0"
       compact
-      title="Loading prompt sources"
-      description="Only reading the local source configuration and sync status."
+      title="正在读取提示词源"
+      description="只读取本地词源配置和同步状态。"
     />
 
     <div v-else class="settings-prompt-source-list">
@@ -48,7 +48,7 @@
               {{ source.sync_label }}
             </MetaChip>
             <MetaChip v-if="source.built_in" size="xs" tone="muted" variant="outline">
-              Built-in
+              内置
             </MetaChip>
           </div>
           <div class="settings-prompt-source-line">
@@ -60,7 +60,7 @@
 
         <div class="settings-prompt-source-side">
           <div class="settings-prompt-source-meta">
-            <MetaChip size="xs" tone="muted">{{ source.prompt_count }} {{ source.prompt_count === 1 ? 'prompt' : 'prompts' }}</MetaChip>
+            <MetaChip size="xs" tone="muted">{{ source.prompt_count }} 条</MetaChip>
             <span class="settings-prompt-source-meta-text" :title="source.last_error || ''">
               {{ source.sync_label }} {{ promptSyncTime(source.last_sync_at) }}
             </span>
@@ -75,14 +75,14 @@
               :disabled="mutationBusy"
               @update:model-value="toggleSource(source, Boolean($event))"
             >
-              Enabled
+              启用
             </Checkbox>
           </div>
         </div>
       </article>
 
       <StateBlock v-if="!loading && sources.length === 0" compact dashed>
-        No prompt sources yet.
+        暂无提示词源。
       </StateBlock>
     </div>
 
@@ -141,9 +141,9 @@ async function loadSources() {
 async function toggleSource(source: PromptSource, enabled: boolean) {
   try {
     await updatePromptSource(source.id, { enabled })
-    toast.success(enabled ? 'Prompt source enabled' : 'Prompt source disabled')
+    toast.success(enabled ? '提示词源已启用' : '提示词源已停用')
   } catch (error: any) {
-    toast.error(error?.message || 'Failed to update prompt source')
+    toast.error(error?.message || '提示词源更新失败')
   }
 }
 

@@ -7,7 +7,7 @@
         block
         placement="top"
         selected-indicator="check"
-        aria-label="List layout"
+        aria-label="列表布局"
         @update:model-value="updateValue"
       />
     </div>
@@ -28,8 +28,8 @@ const emit = defineEmits<{
 }>()
 
 const layoutOptions = [
-  { label: 'Scroll in workspace', value: 'workspace' },
-  { label: 'Expand with page', value: 'page' },
+  { label: '工作区滚动', value: 'workspace' },
+  { label: '随页面展开', value: 'page' },
 ] as const
 
 function updateValue(value: string | string[]) {

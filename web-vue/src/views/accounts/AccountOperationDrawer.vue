@@ -1,7 +1,7 @@
 <template>
   <OperationProgressDrawer
     :open="open"
-    :title="title || 'Account task log'"
+    :title="title || '账号任务记录'"
     :subtitle="`${processed} / ${total} · ${percent}%`"
     :total="total"
     :current="processed"
@@ -14,7 +14,7 @@
     :summary-items="progress?.summary_items || []"
     :can-cancel="canStop"
     :cancel-disabled="stopRequested"
-    :cancel-label="stopRequested ? 'Stopping...' : 'Stop'"
+    :cancel-label="stopRequested ? '停止中...' : '停止'"
     :close-disabled="!canClose"
     @cancel="emit('stop')"
     @close="emit('close')"
@@ -51,7 +51,7 @@ const total = computed(() => Math.max(0, Number(props.progress?.total || 0)))
 const timelineEvents = computed<OperationTimelineEvent[]>(() => props.events.map((event) => ({
   key: event.key,
   timestamp: event.timestamp,
-  label: event.account_label || event.account_id || 'Task',
+  label: event.account_label || event.account_id || '任务',
   message: event.message,
   tone: event.tone,
 })))

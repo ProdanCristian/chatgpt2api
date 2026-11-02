@@ -85,21 +85,21 @@ export function useLogSelectionRuntime(input: LogSelectionRuntimeInput) {
     isDeleting.value = true
     const isBatch = ids.length > 1
     await progressRuntime.start({
-      title: isBatch ? 'Delete logs' : 'Delete log',
-      subtitle: item ? item.time || item.id : `${ids.length} selected`,
+      title: isBatch ? '批量删除日志' : '删除日志',
+      subtitle: item ? item.time || item.id : `已选择 ${ids.length} 条`,
       total: ids.length,
-      message: isBatch ? 'Submitting batch delete request...' : 'Submitting delete request...',
+      message: isBatch ? '正在提交批量删除请求...' : '正在提交删除请求...',
     })
     try {
       const result = await input.deleteLogs(ids)
       const removed = Number(result.removed ?? ids.length)
-      progressRuntime.record({ label: 'Refresh list', message: 'Deleted. Refreshing list...' })
+      progressRuntime.record({ label: '刷新列表', message: '删除完成，正在刷新列表...' })
       if (input.selectedLog.value && ids.includes(input.selectedLog.value.id)) input.closeDetail()
       removeSelectedLogIds(ids)
       await input.refreshLogs()
-      progressRuntime.succeed(isBatch ? `Deleted ${removed} ${removed === 1 ? 'log' : 'logs'}` : 'Log deleted', removed)
+      progressRuntime.succeed(isBatch ? `已删除 ${removed} 条日志` : '日志已删除', removed)
     } catch (error) {
-      const message = errorMessage(error, 'Delete failed')
+      const message = errorMessage(error, '删除失败')
       progressRuntime.fail(message)
     } finally {
       isDeleting.value = false

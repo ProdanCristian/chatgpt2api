@@ -2,26 +2,38 @@ import { ref } from 'vue'
 import { nanocatEnUS, nanocatZhCN, setNanocatLocale } from 'nanocat-ui'
 import { getStringPreference, preferenceKeys, setStringPreference } from '@/lib/preferences'
 
+// The console sources stay Chinese. English mode rewrites rendered text and a few
+// attributes from a Chinese -> English dictionary and restores the original text
+// when switching back, so upstream Chinese edits never conflict with translations.
+
 export type UiLanguage = 'en' | 'zh'
 
 type Dictionary = {
   exact: Map<string, string>
   patterns: [RegExp, string][]
-  substrings: [string, string][]
 }
 
 type Original = { orig: string; cur: string }
 
 const TRANSLATED_ATTRIBUTES = ['placeholder', 'title', 'aria-label', 'alt']
-const SKIPPED_TAGS = new Set(['SCRIPT', 'STYLE', 'TEXTAREA', 'INPUT', 'CODE', 'PRE', 'NOSCRIPT'])
-const SKIP_SELECTOR = '[data-i18n-skip],[contenteditable="true"]'
-const MIN_SUBSTRING_LENGTH = 6
+const SKIPPED_TAGS = new Set(['SCRIPT', 'STYLE', 'TEXTAREA', 'CODE', 'PRE', 'NOSCRIPT'])
+const SKIP_SELECTOR = '[data-i18n-skip],[translate="no"],[contenteditable="true"]'
+const CJK = /[\u3400-\u9fff\uff00-\uffef]/
+const PLACEHOLDER = /\$(\d+)|\u2039(\d+)\|([^|\u203a]*)\|([^\u203a]*)\u203a/g
 
-export function normalizeLanguage(value: unknown): UiLanguage {
-  return value === 'zh' ? 'zh' : 'en'
+export function normalizeLanguage(value: unknown): UiLanguage | null {
+  if (value === 'zh' || value === 'en') return value
+  return null
 }
 
-export const uiLanguage = ref<UiLanguage>(normalizeLanguage(getStringPreference(preferenceKeys.uiLanguage, 'en')))
+function detectLanguage(): UiLanguage {
+  const stored = normalizeLanguage(getStringPreference(preferenceKeys.uiLanguage))
+  if (stored) return stored
+  const browser = typeof navigator === 'undefined' ? '' : navigator.language || ''
+  return /^zh/i.test(browser) ? 'zh' : 'en'
+}
+
+export const uiLanguage = ref<UiLanguage>(detectLanguage())
 
 let dictionary: Dictionary | null = null
 let dictionaryLoading: Promise<Dictionary> | null = null
@@ -35,61 +47,39 @@ const translatedElements = new Set<WeakRef<Element>>()
 
 async function loadDictionary(): Promise<Dictionary> {
   if (dictionary) return dictionary
-  dictionaryLoading ??= import('@/i18n/zhDictionary').then(({ zhExact, zhPatterns }) => {
-    const exact = new Map(Object.entries(zhExact))
+  dictionaryLoading ??= import('@/i18n/enDictionary').then(({ enExact, enPatterns }) => {
+    const exact = new Map(Object.entries(enExact))
     const patterns: [RegExp, string][] = []
-    for (const [source, replacement] of zhPatterns) {
+    for (const [source, replacement] of enPatterns) {
       try {
         patterns.push([new RegExp(source), replacement])
       } catch {
         // Skip patterns the browser cannot compile.
       }
     }
-    const substrings = [...exact.entries()]
-      .filter(([key]) => key.length >= MIN_SUBSTRING_LENGTH && /[A-Za-z]/.test(key))
-      .sort((a, b) => b[0].length - a[0].length)
-    dictionary = { exact, patterns, substrings }
+    dictionary = { exact, patterns }
     return dictionary
   })
   return dictionaryLoading
 }
 
+function fillReplacement(replacement: string, match: RegExpExecArray, dict: Dictionary): string {
+  return replacement.replace(PLACEHOLDER, (_, group: string | undefined, pluralGroup: string | undefined, one: string, many: string) => {
+    if (group !== undefined) return translateCore(match[Number(group)] ?? '', dict, false)
+    const count = Number((match[Number(pluralGroup)] ?? '').replace(/,/g, ''))
+    return count === 1 ? one : many
+  })
+}
+
 function translateCore(core: string, dict: Dictionary, allowPatterns = true): string {
   const direct = dict.exact.get(core)
   if (direct !== undefined) return direct
-  if (allowPatterns) {
-    for (const [regex, replacement] of dict.patterns) {
-      const match = regex.exec(core)
-      if (!match) continue
-      return replacement.replace(/\$(\d+)/g, (_, index: string) => {
-        const group = match[Number(index)] ?? ''
-        return translateCore(group, dict, false)
-      })
-    }
+  if (!allowPatterns) return core
+  for (const [regex, replacement] of dict.patterns) {
+    const match = regex.exec(core)
+    if (match) return fillReplacement(replacement, match, dict)
   }
   return core
-}
-
-function translateSubstrings(core: string, dict: Dictionary): string {
-  let result = core
-  for (const [english, chinese] of dict.substrings) {
-    let from = 0
-    for (;;) {
-      const at = result.indexOf(english, from)
-      if (at < 0) break
-      const before = result[at - 1]
-      const after = result[at + english.length]
-      const startsWord = /[A-Za-z0-9]/.test(english[0])
-      const endsWord = /[A-Za-z0-9]/.test(english[english.length - 1])
-      if ((startsWord && before && /[A-Za-z0-9]/.test(before)) || (endsWord && after && /[A-Za-z0-9]/.test(after))) {
-        from = at + english.length
-        continue
-      }
-      result = result.slice(0, at) + chinese + result.slice(at + english.length)
-      from = at + chinese.length
-    }
-  }
-  return result
 }
 
 function translateString(value: string, dict: Dictionary): string {
@@ -98,10 +88,8 @@ function translateString(value: string, dict: Dictionary): string {
   const match = /^(\s*)([\s\S]*?)(\s*)$/.exec(value)
   const core = match?.[2] ?? ''
   let translated = value
-  if (core && /[A-Za-z]/.test(core)) {
-    let next = translateCore(core, dict)
-    if (next === core) next = translateSubstrings(core, dict)
-    translated = (match?.[1] ?? '') + next + (match?.[3] ?? '')
+  if (core && CJK.test(core)) {
+    translated = (match?.[1] ?? '') + translateCore(core, dict) + (match?.[3] ?? '')
   }
   if (resultCache.size > 5000) resultCache.clear()
   resultCache.set(value, translated)
@@ -136,13 +124,12 @@ function translateTextNode(node: Node, dict: Dictionary): void {
 }
 
 function translateAttributes(element: Element, dict: Dictionary): void {
-  if (SKIPPED_TAGS.has(element.tagName) && element.tagName !== 'INPUT' && element.tagName !== 'TEXTAREA') return
+  if (element.tagName === 'SCRIPT' || element.tagName === 'STYLE' || element.closest(SKIP_SELECTOR)) return
   for (const name of TRANSLATED_ATTRIBUTES) {
     const value = element.getAttribute(name)
     if (!value) continue
     const known = attributeOriginals.get(element)?.get(name)
     if (known && known.cur === value) continue
-    if (element.closest(SKIP_SELECTOR)) continue
     const translated = translateString(value, dict)
     if (translated === value) {
       attributeOriginals.get(element)?.delete(name)
@@ -236,11 +223,11 @@ function stopObserving(): void {
 }
 
 async function applyLanguage(language: UiLanguage): Promise<void> {
-  document.documentElement.lang = language === 'zh' ? 'zh-CN' : 'en'
-  setNanocatLocale(language === 'zh' ? nanocatZhCN : nanocatEnUS)
-  if (language === 'zh') {
+  document.documentElement.lang = language === 'en' ? 'en' : 'zh-CN'
+  setNanocatLocale(language === 'en' ? nanocatEnUS : nanocatZhCN)
+  if (language === 'en') {
     const dict = await loadDictionary()
-    if (uiLanguage.value !== 'zh') return
+    if (uiLanguage.value !== 'en') return
     translateTree(document.documentElement, dict)
     startObserving(dict)
     return
@@ -250,14 +237,19 @@ async function applyLanguage(language: UiLanguage): Promise<void> {
 }
 
 export function setUiLanguage(language: UiLanguage): void {
-  const next = normalizeLanguage(language)
-  setStringPreference(preferenceKeys.uiLanguage, next)
-  uiLanguage.value = next
-  void applyLanguage(next)
+  setStringPreference(preferenceKeys.uiLanguage, language)
+  uiLanguage.value = language
+  void applyLanguage(language)
 }
 
 export function toggleUiLanguage(): void {
-  setUiLanguage(uiLanguage.value === 'zh' ? 'en' : 'zh')
+  setUiLanguage(uiLanguage.value === 'en' ? 'zh' : 'en')
+}
+
+// Loads the dictionary before the first render so English users never see a flash of Chinese.
+export async function prepareUiLanguage(): Promise<void> {
+  setNanocatLocale(uiLanguage.value === 'en' ? nanocatEnUS : nanocatZhCN)
+  if (uiLanguage.value === 'en') await loadDictionary()
 }
 
 export function initUiLanguage(): void {

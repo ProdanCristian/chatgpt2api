@@ -1,37 +1,37 @@
 <template>
   <Teleport to="body">
     <div v-if="compare" class="studio-compare-backdrop" @click.self="emit('close')">
-      <section class="studio-compare-modal" role="dialog" aria-modal="true" aria-label="Image comparison">
+      <section class="studio-compare-modal" role="dialog" aria-modal="true" aria-label="图片对比">
         <ModalHeader
-          title="Image comparison"
+          title="图片对比"
           :subtitle="`${compare.before.name} / ${compare.after.name}`"
           heading-tag="h3"
           compact
           @close="emit('close')"
         >
           <template #actions>
-            <div class="studio-compare-mode" role="group" aria-label="Comparison mode">
+            <div class="studio-compare-mode" role="group" aria-label="对比模式">
               <Button
                 size="sm"
                 :variant="mode === 'slider' ? 'primary' : 'outline'"
                 root-class="studio-compare-mode-button"
                 :aria-pressed="mode === 'slider'"
-                title="Slider comparison"
+                title="滑杆对比"
                 @click="mode = 'slider'"
               >
                 <Icon icon="lucide:sliders-horizontal" class="h-3.5 w-3.5" />
-                <span>Slider</span>
+                <span>滑杆</span>
               </Button>
               <Button
                 size="sm"
                 :variant="mode === 'side-by-side' ? 'primary' : 'outline'"
                 root-class="studio-compare-mode-button"
                 :aria-pressed="mode === 'side-by-side'"
-                title="Side-by-side comparison"
+                title="并排对比"
                 @click="mode = 'side-by-side'"
               >
                 <Icon icon="lucide:columns-2" class="h-3.5 w-3.5" />
-                <span>Side by side</span>
+                <span>并排</span>
               </Button>
             </div>
           </template>
@@ -48,15 +48,15 @@
             @pointerup.prevent="handleStagePointerUp"
             @pointercancel.prevent="handleStagePointerCancel"
           >
-            <img class="studio-compare-image" :src="compare.before.src" :alt="compare.before.name || 'Original'" draggable="false" />
+            <img class="studio-compare-image" :src="compare.before.src" :alt="compare.before.name || '原图'" draggable="false" />
             <div class="studio-compare-after" :style="{ clipPath: `inset(0 ${100 - split}% 0 0)` }">
-              <img class="studio-compare-image" :src="compare.after.src" :alt="compare.after.name || 'New'" draggable="false" />
+              <img class="studio-compare-image" :src="compare.after.src" :alt="compare.after.name || '新图'" draggable="false" />
             </div>
             <div
               class="studio-compare-divider"
               role="slider"
               tabindex="0"
-              aria-label="Comparison position"
+              aria-label="对比位置"
               aria-valuemin="0"
               aria-valuemax="100"
               :aria-valuenow="split"
@@ -70,33 +70,33 @@
           <div v-else class="studio-compare-side-by-side">
             <figure class="studio-compare-panel">
               <div class="studio-compare-panel-media">
-                <img :src="compare.before.src" :alt="compare.before.name || 'Original'" draggable="false" />
+                <img :src="compare.before.src" :alt="compare.before.name || '原图'" draggable="false" />
               </div>
-              <figcaption>Original</figcaption>
+              <figcaption>原图</figcaption>
             </figure>
             <figure class="studio-compare-panel">
               <div class="studio-compare-panel-media">
-                <img :src="compare.after.src" :alt="compare.after.name || 'New'" draggable="false" />
+                <img :src="compare.after.src" :alt="compare.after.name || '新图'" draggable="false" />
               </div>
-              <figcaption>New</figcaption>
+              <figcaption>新图</figcaption>
             </figure>
           </div>
         </div>
 
         <ModalFooter align="center" compact class="studio-compare-footer">
           <template v-if="mode === 'slider'">
-            <span>Original</span>
-            <input v-model.number="split" type="range" min="0" max="100" step="1" aria-label="Comparison position" />
-            <span>New</span>
+            <span>原图</span>
+            <input v-model.number="split" type="range" min="0" max="100" step="1" aria-label="对比位置" />
+            <span>新图</span>
           </template>
           <template v-else>
             <span class="studio-compare-legend-item">
               <i aria-hidden="true"></i>
-              Original
+              原图
             </span>
             <span class="studio-compare-legend-item is-after">
               <i aria-hidden="true"></i>
-              New
+              新图
             </span>
           </template>
         </ModalFooter>

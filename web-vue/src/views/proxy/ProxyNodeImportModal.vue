@@ -1,28 +1,28 @@
 <template>
   <ModalShell
     :open="formOpen"
-    aria-label="Bulk add proxy nodes"
+    aria-label="批量添加代理节点"
     :z-index="140"
     close-on-escape
     scrollable
     @close="requestClose"
   >
     <ModalHeader
-      title="Bulk add proxy nodes"
-      :subtitle="groupName || 'Current proxy group draft'"
+      title="批量添加代理节点"
+      :subtitle="groupName || '当前代理组草稿'"
       compact
       @close="requestClose"
     />
 
     <ModalBody class="space-y-4">
       <label class="block text-xs">
-        <span class="ui-field-label">Proxy nodes</span>
+        <span class="ui-field-label">代理节点</span>
         <textarea
           v-model="sourceText"
           rows="12"
           class="ui-textarea-sm min-h-[17rem] w-full resize-y font-mono"
           placeholder="http://127.0.0.1:7890 30&#10;http://user:password@host:7890 20&#10;socks5://127.0.0.1:1080"
-          aria-label="One proxy address per line; optionally add image concurrency after the address"
+          aria-label="每行一个代理地址，可在地址后填写图片并发"
           autocomplete="off"
           autocapitalize="off"
           spellcheck="false"
@@ -30,12 +30,12 @@
       </label>
 
       <div class="space-y-1 text-xs leading-5 text-muted-foreground">
-        <p>Format per line: proxy address image concurrency</p>
-        <p>If image concurrency is omitted it defaults to 30; enter 0 for unlimited. Duplicate addresses are skipped automatically.</p>
+        <p>每行格式：代理地址 图片并发</p>
+        <p>图片并发省略时默认 30，填写 0 表示不限；重复地址会自动跳过。</p>
       </div>
 
-      <section v-if="invalidItems.length" class="space-y-2" aria-label="Format errors">
-        <p class="text-xs font-medium text-rose-600">Fix the following {{ invalidItems.length }} {{ invalidItems.length === 1 ? 'line' : 'lines' }}</p>
+      <section v-if="invalidItems.length" class="space-y-2" aria-label="格式错误">
+        <p class="text-xs font-medium text-rose-600">请修正以下 {{ invalidItems.length }} 行</p>
         <div class="max-h-40 overflow-y-auto border-y border-border">
           <div
             v-for="item in invalidItems"
@@ -55,16 +55,16 @@
     </ModalBody>
 
     <ModalFooter align="between">
-      <span class="text-xs text-muted-foreground">Added to the draft; takes effect after you save the proxy group</span>
+      <span class="text-xs text-muted-foreground">添加到草稿，保存代理组后生效</span>
       <div class="flex items-center gap-2">
-        <Button size="xs" variant="outline" :disabled="submitting" @click="requestClose">Cancel</Button>
+        <Button size="xs" variant="outline" :disabled="submitting" @click="requestClose">取消</Button>
         <Button
           size="xs"
           variant="primary"
           :disabled="submitting || !sourceText.trim()"
           @click="submitImport"
         >
-          {{ submitting ? 'Adding...' : 'Add nodes' }}
+          {{ submitting ? '添加中...' : '批量添加' }}
         </Button>
       </div>
     </ModalFooter>
@@ -129,7 +129,7 @@ const {
 } = useProxyNodeImportRuntime({
   importNodes: proxyApi.importNodes,
   onApply: (result) => emit('apply', result),
-  formatError: (error) => errorMessage(error, 'Failed to bulk add proxy nodes'),
+  formatError: (error) => errorMessage(error, '批量添加代理节点失败'),
 })
 
 watch(() => props.open, (open) => {

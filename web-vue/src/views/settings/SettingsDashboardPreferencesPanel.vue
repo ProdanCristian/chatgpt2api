@@ -1,23 +1,23 @@
 <template>
-  <FormSection title="Overview center">
+  <FormSection title="概览中心">
     <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
-      <FormField label="Default statistics period">
+      <FormField label="默认统计周期">
         <template #label-extra>
-          <HelpTip text="When the overview center is first opened, all charts use this statistics period by default; you can still switch each one after entering the page." />
+          <HelpTip text="新打开概览中心时，各图表默认使用这个统计周期；进入页面后仍可单独切换。" />
         </template>
         <GroupedSelectMenu
           :model-value="defaultTimeRange"
           :options="DASHBOARD_TIME_RANGE_OPTIONS"
           selected-indicator="none"
-          aria-label="Overview center default statistics period"
+          aria-label="概览中心默认统计周期"
           block
           @update:model-value="setDefaultTimeRange"
         />
       </FormField>
 
-      <FormField label="Auto-refresh interval (seconds)">
+      <FormField label="自动刷新间隔（秒）">
         <template #label-extra>
-          <HelpTip text="Defaults to 10 seconds; can be set to 5–300 seconds. Changes are saved in the current browser and are not written to the backend business configuration." />
+          <HelpTip text="默认 10 秒，可设置为 5–300 秒。修改后保存在当前浏览器，不写入后端业务配置。" />
         </template>
         <Input
           :model-value="refreshIntervalDraft"

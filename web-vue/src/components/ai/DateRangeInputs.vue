@@ -27,7 +27,7 @@ withDefaults(defineProps<{
 }>(), {
   start: '',
   end: '',
-  separator: 'to',
+  separator: '至',
   inputRootClass: '',
 })
 

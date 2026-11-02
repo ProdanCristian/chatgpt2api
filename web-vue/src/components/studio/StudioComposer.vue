@@ -23,10 +23,10 @@
         <div v-if="isEditing" class="chat-editing-bar" @click.stop>
           <div class="chat-editing-info">
             <Icon icon="lucide:pencil" class="h-3.5 w-3.5" />
-            <span>Editing the original message. Sending will replace it and regenerate the replies that follow.</span>
+            <span>正在编辑原消息，发送后会替换该消息并重新生成后续回复。</span>
           </div>
           <button type="button" class="chat-editing-cancel" @click="$emit('cancel-edit')">
-            Cancel
+            取消
           </button>
         </div>
 
@@ -41,7 +41,7 @@
                 <img v-if="source.dataUrl" :src="source.dataUrl" :alt="source.name" />
                 <Icon v-else icon="lucide:image" class="h-5 w-5" />
               </button>
-              <button type="button" class="chat-attachment-remove" :aria-label="`Remove ${source.name}`" @click.stop="$emit('remove-reference', index)">
+              <button type="button" class="chat-attachment-remove" :aria-label="`移除 ${source.name}`" @click.stop="$emit('remove-reference', index)">
                 <Icon icon="lucide:x" class="h-3.5 w-3.5" />
               </button>
             </div>
@@ -68,8 +68,8 @@
                 variant="outline"
                 root-class="chat-vision-button"
                 :disabled="isSending"
-                aria-label="Upload image"
-                title="Upload image"
+                aria-label="上传图片"
+                title="上传图片"
                 @click.stop="handleAttachReferenceClick"
               >
                 <Icon icon="lucide:image-plus" class="h-3.5 w-3.5" />
@@ -82,7 +82,7 @@
                 :options="modeOptions"
                 placement="top"
                 selected-indicator="none"
-                aria-label="Switch mode"
+                aria-label="切换模式"
               />
             </div>
 
@@ -93,14 +93,14 @@
               @click.stop="handleOpenPrompts"
             >
               <Icon icon="lucide:book-open" class="h-3.5 w-3.5" />
-              <span>Prompts</span>
+              <span>提示词</span>
             </StudioToolbarSelectButton>
 
             <StudioToolbarSelectButton
               v-if="mode === 'search'"
               class="chat-search-skill-button"
               :disabled="isSending"
-              title="Search Skill"
+              title="搜索 Skill"
               @click.stop="handleOpenSearchSkill"
             >
               <Icon icon="lucide:package-plus" class="h-3.5 w-3.5" />
@@ -140,7 +140,7 @@
 
                 <div v-if="settingsOpen" class="studio-size-popover" @click.stop>
                   <div class="studio-size-section">
-                    <div class="studio-size-label">Model</div>
+                    <div class="studio-size-label">模型</div>
                     <GroupedSelectMenu
                       v-model="imageModelValue"
                       :options="imageModelSelectOptions"
@@ -149,7 +149,7 @@
                     />
                   </div>
                   <div class="studio-size-section">
-                    <div class="studio-size-label">Quality</div>
+                    <div class="studio-size-label">质量</div>
                     <div class="studio-choice-grid is-quality">
                       <Button
                         v-for="option in IMAGE_QUALITY_OPTIONS"
@@ -165,7 +165,7 @@
                     </div>
                   </div>
                   <div class="studio-size-section">
-                    <div class="studio-size-label">Count</div>
+                    <div class="studio-size-label">数量</div>
                     <div class="studio-choice-grid is-count">
                       <Button
                         v-for="option in IMAGE_COUNT_OPTIONS"
@@ -181,7 +181,7 @@
                     </div>
                   </div>
                   <div class="studio-size-section">
-                    <div class="studio-size-label">Aspect ratio</div>
+                    <div class="studio-size-label">比例</div>
                     <div class="studio-choice-grid is-ratio">
                       <Button
                         v-for="option in ratioOptions"
@@ -197,7 +197,7 @@
                     </div>
                   </div>
                   <div class="studio-size-section">
-                    <div class="studio-size-label">Resolution</div>
+                    <div class="studio-size-label">分辨率</div>
                     <div class="studio-choice-grid is-resolution">
                       <Button
                         v-for="option in resolutionOptions"
@@ -224,17 +224,17 @@
                   :options="fileKindOptions"
                   placement="top"
                   selected-indicator="none"
-                  aria-label="Select file type"
+                  aria-label="选择文件类型"
                 />
               </div>
               <StudioToolbarSelectButton
                 class="chat-recent-file-tasks-button"
                 :disabled="isSending"
-                title="Recent file tasks"
+                title="最近文件任务"
                 @click.stop="handleOpenRecentFileTasks"
               >
                 <Icon icon="lucide:history" class="h-3.5 w-3.5" />
-                <span>Recent</span>
+                <span>最近</span>
               </StudioToolbarSelectButton>
             </template>
           </div>
@@ -244,11 +244,11 @@
               v-if="isStreaming"
               type="button"
               class="chat-input-send chat-input-send-danger"
-              aria-label="Stop generating"
+              aria-label="停止输出"
               @click.stop="$emit('stop')"
             >
               <Icon icon="lucide:square" class="h-4 w-4" />
-              <span class="chat-input-send-label">Stop</span>
+              <span class="chat-input-send-label">停止</span>
             </button>
             <button
               v-else
@@ -268,7 +268,7 @@
 
       <div v-if="isDragging" class="studio-drop-overlay">
         <Icon icon="lucide:image-plus" class="h-5 w-5" />
-        Drop to add reference images
+        松开以添加参考图
       </div>
     </form>
   </footer>
@@ -345,10 +345,10 @@ let textareaResizeFrame = 0
 let composerResizeObserver: ResizeObserver | null = null
 
 const modeOptions: Array<{ label: string; value: StudioComposeMode }> = [
-  { label: 'Chat', value: 'chat' },
-  { label: 'Image', value: 'image' },
-  { label: 'Search', value: 'search' },
-  { label: 'File', value: 'file' },
+  { label: '对话', value: 'chat' },
+  { label: '画图', value: 'image' },
+  { label: '搜索', value: 'search' },
+  { label: '文件', value: 'file' },
 ]
 
 const fileKindOptions: Array<{ label: string; value: StudioFileKind }> = [
@@ -399,16 +399,16 @@ const imageModelValue = computed({
 })
 
 const chatModelSelectOptions = computed(() => props.chatModelOptions.map((model) => ({
-  label: model === 'auto' ? 'Auto model' : model,
+  label: model === 'auto' ? '自动模型' : model,
   value: model,
 })))
 
 const chatReasoningEffortOptions = [
-  { label: 'Default', value: 'default' },
-  { label: 'Low', value: 'low' },
-  { label: 'Medium', value: 'medium' },
-  { label: 'High', value: 'high' },
-  { label: 'Extra high', value: 'extended' },
+  { label: '默认', value: 'default' },
+  { label: '低', value: 'low' },
+  { label: '中', value: 'medium' },
+  { label: '高', value: 'high' },
+  { label: '超高', value: 'extended' },
 ]
 
 const imageModelSelectOptions = computed(() => props.imageModelOptions.map((model) => ({
@@ -428,16 +428,16 @@ const ratioOptions = computed(() => {
       seen.add(preset.ratio)
       return true
     })
-    .map((preset) => ({ label: preset.ratio === 'auto' ? 'Auto' : preset.ratio, value: preset.ratio }))
+    .map((preset) => ({ label: preset.ratio === 'auto' ? '自动' : preset.ratio, value: preset.ratio }))
 })
 const resolutionOptions = computed(() => {
   const order: ImageSizeResolution[] = ['auto', '1K', '2K', '4K']
   const values = new Set(sizePresets.value.map((preset) => preset.resolution))
-  return order.filter((value) => values.has(value)).map((value) => ({ label: value === 'auto' ? 'Auto' : value, value }))
+  return order.filter((value) => values.has(value)).map((value) => ({ label: value === 'auto' ? '自动' : value, value }))
 })
 const selectedSizeDetailLabel = computed(() => formatImageSizeLabel(props.imageForm.size))
 const canAttachReferences = computed(() => props.mode === 'image' || props.mode === 'chat' || props.mode === 'file')
-const selectedChatModelLabel = computed(() => chatModelSelectOptions.value.find((option) => option.value === props.chatModel)?.label || props.chatModel || 'Auto model')
+const selectedChatModelLabel = computed(() => chatModelSelectOptions.value.find((option) => option.value === props.chatModel)?.label || props.chatModel || '自动模型')
 const selectedReasoningEffortLabel = computed(() => {
   const current = props.chatReasoningEffort || 'default'
   return chatReasoningEffortOptions.find((option) => option.value === current)?.label || current
@@ -445,12 +445,12 @@ const selectedReasoningEffortLabel = computed(() => {
 const chatSettingsLabel = computed(() => {
   const model = compactModelLabel(props.chatModel)
   const reasoning = selectedReasoningEffortLabel.value
-  return reasoning === 'Default' ? model : `${model} ${reasoning}`
+  return reasoning === '默认' ? model : `${model} ${reasoning}`
 })
 const chatSettingsMenuItems = computed<ComposerMenuItem[]>(() => [
   {
     key: 'reasoning-heading',
-    label: 'Reasoning',
+    label: '推理',
     heading: true,
   },
   ...chatReasoningEffortOptions
@@ -465,7 +465,7 @@ const chatSettingsMenuItems = computed<ComposerMenuItem[]>(() => [
     label: selectedChatModelLabel.value,
     dividerBefore: true,
     children: [
-      { key: 'model-heading', label: 'Model', heading: true },
+      { key: 'model-heading', label: '模型', heading: true },
       ...chatModelSelectOptions.value.map((option) => ({
         key: `model:${option.value}`,
         label: option.label,
@@ -475,31 +475,31 @@ const chatSettingsMenuItems = computed<ComposerMenuItem[]>(() => [
   },
 ])
 const imageSummaryLabel = computed(() => {
-  const count = props.imageForm.n > 1 ? ` · ${props.imageForm.n} ${props.imageForm.n === 1 ? 'image' : 'images'}` : ''
+  const count = props.imageForm.n > 1 ? ` · ${props.imageForm.n} 张` : ''
   return `${formatImageSizeLabel(props.imageForm.size)}${count}`
 })
-const imagePlaceholder = computed(() => props.references.length ? 'Describe how you want to edit the reference images' : 'Describe the image you want to generate. You can also paste or drag in reference images')
-const chatPlaceholder = computed(() => props.references.length ? 'Describe what you want the model to recognize or analyze in the images' : 'Type a message. Enter to send, Shift+Enter for a new line')
+const imagePlaceholder = computed(() => props.references.length ? '描述你想如何修改参考图' : '输入你想生成的画面，也可以粘贴或拖入参考图')
+const chatPlaceholder = computed(() => props.references.length ? '描述你想让模型识别或分析的图片' : '输入消息，Enter 发送，Shift+Enter 换行')
 const filePlaceholder = computed(() => {
   const kind = props.fileKind === 'psd' ? 'PSD' : 'PPT'
   return props.references.length
-    ? `Describe the ${kind} you want to generate from the reference images`
-    : `Describe the ${kind} you want to generate. You can also paste or drag in reference images`
+    ? `描述你想根据参考图生成的 ${kind}`
+    : `描述你想生成的 ${kind}，也可以粘贴或拖入参考图`
 })
 const placeholderText = computed(() => {
   if (props.mode === 'image') return imagePlaceholder.value
   if (props.mode === 'file') return filePlaceholder.value
-  if (props.mode === 'search') return 'Type a search question. Enter to search, Shift+Enter for a new line'
+  if (props.mode === 'search') return '输入搜索问题，Enter 搜索，Shift+Enter 换行'
   return chatPlaceholder.value
 })
 const submitAriaLabel = computed(() => {
-  if (props.mode === 'image') return 'Submit image task'
-  if (props.mode === 'file') return `Generate ${props.fileKind === 'psd' ? 'PSD' : 'PPT'}`
-  return 'Send message'
+  if (props.mode === 'image') return '提交图片任务'
+  if (props.mode === 'file') return `生成 ${props.fileKind === 'psd' ? 'PSD' : 'PPT'}`
+  return '发送消息'
 })
 const submitLabel = computed(() => {
-  if (props.isEditing) return 'Save'
-  return props.mode === 'file' ? 'Generate' : 'Send'
+  if (props.isEditing) return '保存'
+  return props.mode === 'file' ? '生成' : '发送'
 })
 
 function toggleSettings() {
@@ -548,7 +548,7 @@ function handleChatSettingsMenuSelect(key: string) {
 
 function compactModelLabel(model: string) {
   const normalized = String(model || '').trim()
-  if (!normalized || normalized === 'auto') return 'Auto'
+  if (!normalized || normalized === 'auto') return '自动'
   return normalized.replace(/^gpt-/i, '')
 }
 

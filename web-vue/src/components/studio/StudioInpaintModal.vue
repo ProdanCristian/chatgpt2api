@@ -1,10 +1,10 @@
 <template>
   <Teleport to="body">
     <div v-if="source" class="studio-inpaint-backdrop" @click.self="emit('close')">
-      <section class="studio-inpaint-modal" role="dialog" aria-modal="true" aria-label="Edit region">
+      <section class="studio-inpaint-modal" role="dialog" aria-modal="true" aria-label="局部修改">
         <ModalHeader
-          title="Edit region"
-          :subtitle="source.name || 'Generated image'"
+          title="局部修改"
+          :subtitle="source.name || '生成图片'"
           heading-tag="h3"
           compact
           @close="emit('close')"
@@ -13,7 +13,7 @@
         <div class="studio-inpaint-body">
           <aside class="studio-inpaint-tools">
             <div class="studio-inpaint-group">
-              <span class="studio-inpaint-label">Tool</span>
+              <span class="studio-inpaint-label">工具</span>
               <div class="studio-inpaint-segmented">
                 <Button
                   size="sm"
@@ -23,7 +23,7 @@
                   @click="tool = 'rect'"
                 >
                   <Icon icon="lucide:square-dashed" class="h-3.5 w-3.5" />
-                  <span>Rectangle</span>
+                  <span>矩形</span>
                 </Button>
                 <Button
                   size="sm"
@@ -33,18 +33,18 @@
                   @click="tool = 'brush'"
                 >
                   <Icon icon="lucide:brush" class="h-3.5 w-3.5" />
-                  <span>Brush</span>
+                  <span>画笔</span>
                 </Button>
               </div>
             </div>
 
             <div class="studio-inpaint-group">
               <label class="studio-inpaint-range">
-                <span>Brush <strong>{{ brushSize }}px</strong></span>
+                <span>画笔 <strong>{{ brushSize }}px</strong></span>
                 <input v-model.number="brushSize" type="range" min="8" max="160" step="2" />
               </label>
               <label class="studio-inpaint-range">
-                <span>Feather <strong>{{ feather }}px</strong></span>
+                <span>羽化 <strong>{{ feather }}px</strong></span>
                 <input v-model.number="feather" type="range" min="0" max="96" step="2" />
               </label>
             </div>
@@ -55,11 +55,11 @@
                 :variant="invertSelection ? 'primary' : 'outline'"
                 block
                 root-class="studio-inpaint-tool-button"
-                title="Invert selection"
+                title="反选区域"
                 @click="invertSelection = !invertSelection"
               >
                 <Icon icon="lucide:flip-horizontal-2" class="h-3.5 w-3.5" />
-                <span>Invert</span>
+                <span>反选</span>
               </Button>
               <Button
                 size="sm"
@@ -67,11 +67,11 @@
                 block
                 root-class="studio-inpaint-tool-button"
                 :disabled="!marks.length"
-                title="Undo last step"
+                title="撤销上一步"
                 @click="undoMark"
               >
                 <Icon icon="lucide:undo-2" class="h-3.5 w-3.5" />
-                <span>Undo</span>
+                <span>撤销</span>
               </Button>
               <Button
                 size="sm"
@@ -79,22 +79,22 @@
                 block
                 root-class="studio-inpaint-tool-button"
                 :disabled="!marks.length"
-                title="Clear selection"
+                title="清空选区"
                 @click="clearMarks"
               >
                 <Icon icon="lucide:eraser" class="h-3.5 w-3.5" />
-                <span>Clear</span>
+                <span>清空</span>
               </Button>
               <Button
                 size="sm"
                 :variant="showOverlay ? 'primary' : 'outline'"
                 block
                 root-class="studio-inpaint-tool-button"
-                title="Show or hide selection"
+                title="显示或隐藏选区"
                 @click="showOverlay = !showOverlay"
               >
                 <Icon icon="lucide:scan-eye" class="h-3.5 w-3.5" />
-                <span>{{ showOverlay ? 'Hide' : 'Show' }}</span>
+                <span>{{ showOverlay ? '隐藏' : '显示' }}</span>
               </Button>
             </div>
           </aside>
@@ -105,7 +105,7 @@
                 <img
                   ref="imageRef"
                   :src="source.src"
-                  :alt="source.name || 'Original'"
+                  :alt="source.name || '原图'"
                   crossorigin="anonymous"
                   draggable="false"
                   @load="handleImageLoad"
@@ -128,7 +128,7 @@
           <Input
             v-model="prompt"
             type="text"
-            placeholder="Describe the edit you want"
+            placeholder="描述局部修改要求"
             root-class="studio-inpaint-prompt-input"
             @keydown.enter.prevent="submit"
           />
@@ -140,7 +140,7 @@
               :disabled="!marks.length"
               @click="clearMarks"
             >
-              Clear selection
+              清空选区
             </Button>
             <Button
               size="sm"
@@ -150,7 +150,7 @@
               @click="submit"
             >
               <Icon :icon="submitting ? 'lucide:loader-circle' : 'lucide:wand-sparkles'" class="h-3.5 w-3.5" :class="{ 'animate-spin': submitting }" />
-              <span>Submit edit</span>
+              <span>提交修改</span>
             </Button>
           </div>
         </ModalFooter>
@@ -448,7 +448,7 @@ function canvasBlob(canvas: HTMLCanvasElement) {
   return new Promise<Blob>((resolve, reject) => {
     canvas.toBlob((blob) => {
       if (blob) resolve(blob)
-      else reject(new Error('Failed to generate the mask image'))
+      else reject(new Error('标记图生成失败'))
     }, 'image/png')
   })
 }
@@ -473,12 +473,12 @@ function paintSelectionMarker(ctx: CanvasRenderingContext2D) {
 
 async function createMarkedImageFile() {
   const image = imageRef.value
-  if (!image) throw new Error('The original image has not loaded')
+  if (!image) throw new Error('原图未加载')
   const output = document.createElement('canvas')
   output.width = imageWidth.value
   output.height = imageHeight.value
   const ctx = output.getContext('2d')
-  if (!ctx) throw new Error('Your browser does not support the mask canvas')
+  if (!ctx) throw new Error('浏览器不支持标记画布')
   ctx.drawImage(image, 0, 0, output.width, output.height)
   paintSelectionMarker(ctx)
   const blob = await canvasBlob(output)

@@ -38,19 +38,19 @@
           </Button>
           <CloseButton
             icon="lucide:minus"
-            label="Collapse task panel"
+            label="收起任务面板"
             @click="minimized = true"
           />
           <CloseButton
             :disabled="resolvedCloseDisabled"
-            :label="resolvedCloseDisabled ? 'Task is running and cannot be closed yet' : 'Close task log'"
+            :label="resolvedCloseDisabled ? '任务运行中，暂时无法关闭' : '关闭任务记录'"
             @click="emit('close')"
           />
         </div>
       </header>
 
-      <section class="operation-progress-summary" aria-label="Task progress">
-        <ProgressBar :value="progressValue" :aria-label="`${title} progress`" />
+      <section class="operation-progress-summary" aria-label="任务进度">
+        <ProgressBar :value="progressValue" :aria-label="`${title}进度`" />
         <div v-if="resolvedSummaryItems.length" class="operation-progress-metrics">
           <div
             v-for="item in resolvedSummaryItems"
@@ -63,10 +63,10 @@
         </div>
       </section>
 
-      <section class="operation-progress-events" aria-label="Task log">
+      <section class="operation-progress-events" aria-label="任务记录">
         <div class="operation-progress-events__header">
-          <p class="text-xs font-semibold text-foreground">Task log</p>
-          <span class="text-[11px] text-muted-foreground">{{ events.length }} {{ events.length === 1 ? 'entry' : 'entries' }}</span>
+          <p class="text-xs font-semibold text-foreground">任务记录</p>
+          <span class="text-[11px] text-muted-foreground">{{ events.length }} 条</span>
         </div>
 
         <ol
@@ -76,7 +76,7 @@
           @scroll.passive="handleEventListScroll"
         >
           <li v-if="events.length === 0" class="operation-progress-events__empty">
-            {{ busy ? 'Waiting for task log...' : 'No task log entries' }}
+            {{ busy ? '等待任务记录...' : '暂无任务记录' }}
           </li>
           <template v-else>
             <li
@@ -117,7 +117,7 @@
   <SideDock
     :open="open && minimized"
     :draggable="true"
-    aria-label="Expand task panel"
+    aria-label="展开任务面板"
     :aria-describedby="dockStatusId"
     :z-index="zIndex"
     @click="minimized = false"
@@ -170,12 +170,12 @@ const props = withDefaults(defineProps<{
   total: 0,
   current: 0,
   percent: undefined,
-  statusLabel: 'Processed',
+  statusLabel: '已处理',
   error: '',
   busy: false,
   canCancel: false,
   cancelDisabled: false,
-  cancelLabel: 'Stop',
+  cancelLabel: '停止',
   closeDisabled: undefined,
   zIndex: () => OVERLAY_LAYER.confirm - 1,
   tone: 'success',
@@ -206,9 +206,9 @@ const resolvedCloseDisabled = computed(() => props.closeDisabled ?? props.busy)
 const resolvedSummaryItems = computed<OperationSummaryItem[]>(() => {
   if (props.summaryItems.length) return props.summaryItems
   return [
-    { key: 'processed', label: 'Processed', value: props.current },
-    { key: 'remaining', label: 'Remaining', value: Math.max(0, props.total - props.current) },
-    { key: 'total', label: 'Total', value: props.total },
+    { key: 'processed', label: '已处理', value: props.current },
+    { key: 'remaining', label: '待处理', value: Math.max(0, props.total - props.current) },
+    { key: 'total', label: '总数', value: props.total },
   ]
 })
 
@@ -235,7 +235,7 @@ function eventMessageClass(tone: OperationProgressTone) {
 function formatEventTime(value: string) {
   const date = new Date(value)
   if (Number.isNaN(date.getTime())) return '--:--:--'
-  return new Intl.DateTimeFormat('en-US', {
+  return new Intl.DateTimeFormat('zh-CN', {
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',

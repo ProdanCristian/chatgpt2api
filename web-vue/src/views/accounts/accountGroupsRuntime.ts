@@ -83,47 +83,47 @@ export function useAccountGroupsRuntime(options: AccountGroupsRuntimeOptions) {
     runtime: options.runtime,
     key: options.requestKey,
     loading: accountGroupsLoading,
-    errorMessage: 'Failed to load account groups',
+    errorMessage: '加载账号组失败',
   })
 
   const accountGroupOptions = computed(() => [
-    { label: 'No account group', value: '' },
+    { label: '不绑定账号组', value: '' },
     ...accountGroups.value.map((group) => ({
-      label: `${group.enabled === false ? 'Disabled · ' : ''}${group.name || group.id}`,
+      label: `${group.enabled === false ? '停用 · ' : ''}${group.name || group.id}`,
       value: group.id,
     })),
   ])
 
   const accountGroupProxyOptions = computed(() => {
     const rows = proxyGroups.value.map((group) => ({
-      label: `${group.enabled === false ? 'Disabled · ' : ''}${group.name || group.id}${Array.isArray(group.nodes) ? ` · ${group.nodes.length} node${group.nodes.length === 1 ? '' : 's'}` : ''}`,
+      label: `${group.enabled === false ? '停用 · ' : ''}${group.name || group.id}${Array.isArray(group.nodes) ? ` · ${group.nodes.length} 个节点` : ''}`,
       value: group.id,
     }))
     const selectedId = selectedAccountGroupProxyGroupId.value
     if (selectedId && !rows.some((item) => item.value === selectedId)) {
-      rows.unshift({ label: `Unknown proxy group · ${selectedId}`, value: selectedId })
+      rows.unshift({ label: `未知代理组 · ${selectedId}`, value: selectedId })
     }
     return [
-      { label: 'Select a proxy group', value: '' },
+      { label: '选择代理组', value: '' },
       ...rows,
     ]
   })
 
   const bindAccountGroupOptions = computed(() => [
-    { label: 'Select an account group', value: '' },
+    { label: '选择账号组', value: '' },
     ...accountGroupOptions.value.slice(1),
-    { label: 'Remove from group', value: '__ungrouped__' },
+    { label: '取消分组', value: '__ungrouped__' },
   ])
 
   const accountGroupProxyPreview = computed(() => {
     if (projectedAccountGroupProxyLabel.value) return projectedAccountGroupProxyLabel.value
-    if (accountGroupProxyMode.value === 'global') return 'Use default egress'
-    if (accountGroupProxyMode.value === 'direct') return 'Force direct connection'
+    if (accountGroupProxyMode.value === 'global') return '使用默认出口'
+    if (accountGroupProxyMode.value === 'direct') return '强制直连'
     if (accountGroupProxyMode.value === 'group') {
       const group = proxyGroups.value.find((item) => item.id === selectedAccountGroupProxyGroupId.value)
-      return `Proxy group: ${group?.name || selectedAccountGroupProxyGroupId.value || '-'}`
+      return `代理组：${group?.name || selectedAccountGroupProxyGroupId.value || '-'}`
     }
-    return accountGroupCustomProxyInput.value || 'Custom proxy'
+    return accountGroupCustomProxyInput.value || '自定义代理'
   })
 
   function syncAccountGroupProxyControlsFromProjection(group?: AccountGroup) {
@@ -214,7 +214,7 @@ export function useAccountGroupsRuntime(options: AccountGroupsRuntimeOptions) {
       {
         apply: applyAccountGroupsPayload,
         onError: (_message, error) => {
-          if (!loadOptions?.silentErrorToast) options.setError('Failed to load account groups', error)
+          if (!loadOptions?.silentErrorToast) options.setError('加载账号组失败', error)
         },
         silentError: loadOptions?.silentErrorToast,
       },
@@ -261,7 +261,7 @@ export function useAccountGroupsRuntime(options: AccountGroupsRuntimeOptions) {
     const name = accountGroupForm.name.trim()
     const id = (accountGroupForm.id || editingAccountGroupId.value || createAccountGroupId(name)).trim()
     if (!name) {
-      toast.warning('Enter an account group name')
+      toast.warning('请填写账号组名称')
       return
     }
     const normalizedName = normalizeAccountGroupName(name)
@@ -270,15 +270,15 @@ export function useAccountGroupsRuntime(options: AccountGroupsRuntimeOptions) {
       normalizeAccountGroupName(group.name || group.id) === normalizedName
     ))
     if (duplicatedName) {
-      toast.warning('That account group name already exists; choose another name')
+      toast.warning('账号组名称已存在，请换一个名称')
       return
     }
     if (accountGroupProxyMode.value === 'group' && !selectedAccountGroupProxyGroupId.value.trim()) {
-      toast.warning('Select a default proxy group for the account group')
+      toast.warning('请选择账号组默认代理组')
       return
     }
     if (accountGroupProxyMode.value === 'custom' && !accountGroupCustomProxyInput.value.trim()) {
-      toast.warning('Enter a custom proxy address for the account group')
+      toast.warning('请填写账号组自定义代理地址')
       return
     }
 
@@ -297,9 +297,9 @@ export function useAccountGroupsRuntime(options: AccountGroupsRuntimeOptions) {
       applyAccountGroupsPayload(response)
       selectedBindGroupId.value = response.group?.id || selectedBindGroupId.value
       resetAccountGroupForm()
-      toast.success(wasEditing ? 'Account group updated' : 'Account group created')
+      toast.success(wasEditing ? '账号组已更新' : '账号组已创建')
     } catch (error) {
-      options.setError(wasEditing ? 'Failed to update account group' : 'Failed to create account group', error)
+      options.setError(wasEditing ? '更新账号组失败' : '创建账号组失败', error)
     } finally {
       accountGroupSaving.value = false
     }
@@ -309,10 +309,10 @@ export function useAccountGroupsRuntime(options: AccountGroupsRuntimeOptions) {
     if (accountGroupSaving.value) return
     const accountCount = Number(group.account_count || 0)
     const confirmed = await confirmDialog.ask({
-      title: 'Delete account group',
-      message: `Delete the account group "${group.name || group.id}"? ${accountCount ? `${accountCount} account${accountCount === 1 ? '' : 's'} will become ungrouped.` : 'No accounts will be deleted.'}`,
-      confirmText: 'Confirm delete',
-      cancelText: 'Cancel',
+      title: '删除账号组',
+      message: `确认删除账号组「${group.name || group.id}」吗？${accountCount ? `当前 ${accountCount} 个账号会变为未分组。` : '不会删除任何账号。'}`,
+      confirmText: '确认删除',
+      cancelText: '取消',
     })
     if (!confirmed) return
 
@@ -322,9 +322,9 @@ export function useAccountGroupsRuntime(options: AccountGroupsRuntimeOptions) {
       applyAccountGroupsPayload(response)
       await options.loadData({ silentErrorToast: true })
       if (editingAccountGroupId.value === group.id) resetAccountGroupForm()
-      toast.success('Account group deleted')
+      toast.success('账号组已删除')
     } catch (error) {
-      options.setError('Failed to delete account group', error)
+      options.setError('删除账号组失败', error)
     } finally {
       accountGroupSaving.value = false
     }

@@ -6,11 +6,11 @@
         class="proxy-node-summary-card__status"
         :class="isEnabled ? 'proxy-node-summary-card__status--enabled' : 'proxy-node-summary-card__status--disabled'"
       >
-        {{ isEnabled ? 'Enabled' : 'Disabled' }}
+        {{ isEnabled ? '启用' : '停用' }}
       </span>
     </div>
     <p class="proxy-node-summary-card__url">{{ maskedUrl || emptyText }}</p>
-    <p class="proxy-node-summary-card__meta">Image concurrency {{ imageLimit > 0 ? imageLimit : 'Unlimited' }}</p>
+    <p class="proxy-node-summary-card__meta">图片并发 {{ imageLimit > 0 ? imageLimit : '不限' }}</p>
   </article>
 </template>
 
@@ -22,7 +22,7 @@ const props = withDefaults(defineProps<{
   node: Pick<ProxyNode, 'id' | 'name' | 'url' | 'enabled' | 'image_concurrency_limit'>
   emptyText?: string
 }>(), {
-  emptyText: 'Not set',
+  emptyText: '未设置',
 })
 
 const isEnabled = computed(() => props.node.enabled !== false)

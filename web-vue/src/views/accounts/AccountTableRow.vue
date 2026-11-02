@@ -7,7 +7,7 @@
     <td class="py-3 pr-4 align-middle">
       <Checkbox
         :model-value="selected"
-        :aria-label="`Select account ${accountPrimaryText(item)}`"
+        :aria-label="`选择账号 ${accountPrimaryText(item)}`"
         @update:model-value="emit('toggle-select', item.id, $event)"
       />
     </td>
@@ -26,9 +26,9 @@
       <StatusDetailPill
         :label="statusText(item)"
         :tone="item.status_tone"
-        title="Status details"
-        detail-label="Status description"
-        raw-error-label="Raw error"
+        title="状态详情"
+        detail-label="状态说明"
+        raw-error-label="原始报错"
         :card-class="statusDetailCardClass"
         :detail="statusDetailText(item)"
         :raw-error="statusRawError(item)"

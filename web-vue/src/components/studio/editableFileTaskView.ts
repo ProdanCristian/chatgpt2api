@@ -20,7 +20,7 @@ export function editableFileTaskDownloadFilename(
 
 export function editableFileTaskDownloadError(error: unknown) {
   if (error instanceof Error && error.message.trim()) return error.message
-  return 'File download failed'
+  return '文件下载失败'
 }
 
 export type EditableFileTaskDownloadRuntimeInput = {

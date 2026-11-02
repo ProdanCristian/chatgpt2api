@@ -51,7 +51,7 @@ export function useGalleryOperationsRuntime(options: GalleryOperationsRuntimeOpt
     runtime: options.runtime,
     key: 'gallery:storage',
     error: storageActionError,
-    errorMessage: 'Failed to refresh storage stats',
+    errorMessage: '刷新存储统计失败',
   })
 
   async function refreshStorageStats(optionsOverride: { lock?: boolean; silent?: boolean } = {}) {
@@ -66,7 +66,7 @@ export function useGalleryOperationsRuntime(options: GalleryOperationsRuntimeOpt
           options.storageStats.value = nextStats
         },
         onError: (message) => {
-          options.toast.error(message, 'Refresh failed')
+          options.toast.error(message, '刷新失败')
         },
         onSettled: (latest) => {
           if (shouldLock && latest) isStorageBusy.value = false
@@ -90,24 +90,24 @@ export function useGalleryOperationsRuntime(options: GalleryOperationsRuntimeOpt
 
   async function handleCompressStorage() {
     const confirmed = await options.confirmDialog.ask({
-      title: 'Compress images',
-      message: 'This will try to compress local images to free up space. It may take a while. Continue?',
-      confirmText: 'Start compression',
-      cancelText: 'Cancel',
+      title: '压缩图片',
+      message: '将尝试压缩本地图片以释放空间。该操作可能需要一点时间，确定继续吗？',
+      confirmText: '开始压缩',
+      cancelText: '取消',
     })
     if (!confirmed) return
 
     isStorageBusy.value = true
-    storageActionMessage.value = 'Compressing images...'
+    storageActionMessage.value = '正在压缩图片...'
     storageActionError.value = ''
     try {
       const result = await galleryApi.compressStorage()
       storageActionMessage.value = result.message
-      options.toast.success(storageActionMessage.value, 'Compression complete')
+      options.toast.success(storageActionMessage.value, '压缩完成')
       await Promise.all([refreshStorageStats({ lock: false }), options.loadGallery()])
     } catch (error: any) {
-      storageActionError.value = error?.message || 'Failed to compress images'
-      options.toast.error(storageActionError.value, 'Compression failed')
+      storageActionError.value = error?.message || '压缩图片失败'
+      options.toast.error(storageActionError.value, '压缩失败')
     } finally {
       isStorageBusy.value = false
     }
@@ -115,24 +115,24 @@ export function useGalleryOperationsRuntime(options: GalleryOperationsRuntimeOpt
 
   async function handleCleanupExpired() {
     const confirmed = await options.confirmDialog.ask({
-      title: 'Clean up expired images',
-      message: 'This will remove local copies of expired images; gallery records that still have a WebDAV copy are kept. This cannot be undone. Continue?',
-      confirmText: 'Clean up expired',
-      cancelText: 'Cancel',
+      title: '清理过期图片',
+      message: '将清理已过期图片的本地副本；仍有 WebDAV 副本的图库记录会保留。此操作不可恢复，确定继续吗？',
+      confirmText: '清理过期',
+      cancelText: '取消',
     })
     if (!confirmed) return
 
     isStorageBusy.value = true
-    storageActionMessage.value = 'Cleaning up expired images...'
+    storageActionMessage.value = '正在清理过期图片...'
     storageActionError.value = ''
     try {
       const result = await galleryApi.cleanupExpired()
       storageActionMessage.value = result.message
-      options.toast.success(storageActionMessage.value, 'Cleanup complete')
+      options.toast.success(storageActionMessage.value, '清理完成')
       await Promise.all([refreshStorageStats({ lock: false }), options.loadGallery()])
     } catch (error: any) {
-      storageActionError.value = error?.message || 'Failed to clean up expired images'
-      options.toast.error(storageActionError.value, 'Cleanup failed')
+      storageActionError.value = error?.message || '清理过期图片失败'
+      options.toast.error(storageActionError.value, '清理失败')
     } finally {
       isStorageBusy.value = false
     }
@@ -141,38 +141,38 @@ export function useGalleryOperationsRuntime(options: GalleryOperationsRuntimeOpt
   async function handleCleanupToTarget(dryRun: boolean) {
     const target = Number(targetFreeMb.value)
     if (!Number.isFinite(target) || target < 1) {
-      storageActionError.value = 'Enter a valid target free space.'
-      options.toast.error(storageActionError.value, 'Invalid input')
+      storageActionError.value = '请输入有效的目标剩余空间。'
+      options.toast.error(storageActionError.value, '参数错误')
       return
     }
 
     const normalizedTarget = Math.floor(target)
     if (!dryRun) {
       const confirmed = await options.confirmDialog.ask({
-        title: 'Clean up to target space',
-        message: `Images will be removed starting with the oldest until free disk space reaches ${formatMb(normalizedTarget)} where possible. This cannot be undone. Continue?`,
-        confirmText: 'Start cleanup',
-        cancelText: 'Cancel',
+        title: '清理到目标空间',
+        message: `将从旧图片开始清理，直到磁盘剩余空间尽量达到 ${formatMb(normalizedTarget)}。此操作不可恢复，确定继续吗？`,
+        confirmText: '开始清理',
+        cancelText: '取消',
       })
       if (!confirmed) return
     }
 
     isStorageBusy.value = true
-    storageActionMessage.value = dryRun ? 'Estimating images to clean up...' : 'Cleaning up to target free space...'
+    storageActionMessage.value = dryRun ? '正在预估可清理图片...' : '正在清理到目标剩余空间...'
     storageActionError.value = ''
     try {
       const result = await galleryApi.cleanupToTarget(normalizedTarget, dryRun)
       storageActionMessage.value = result.message
       if (dryRun) {
-        options.toast.success(storageActionMessage.value, 'Estimate complete')
+        options.toast.success(storageActionMessage.value, '预估完成')
         await refreshStorageStats({ lock: false })
       } else {
-        options.toast.success(storageActionMessage.value, 'Cleanup complete')
+        options.toast.success(storageActionMessage.value, '清理完成')
         await Promise.all([refreshStorageStats({ lock: false }), options.loadGallery()])
       }
     } catch (error: any) {
-      storageActionError.value = error?.message || 'Failed to clean up to target free space'
-      options.toast.error(storageActionError.value, 'Cleanup failed')
+      storageActionError.value = error?.message || '按目标剩余空间清理失败'
+      options.toast.error(storageActionError.value, '清理失败')
     } finally {
       isStorageBusy.value = false
     }
@@ -182,26 +182,26 @@ export function useGalleryOperationsRuntime(options: GalleryOperationsRuntimeOpt
     if (paths.length === 0) return
     const isBatch = paths.length > 1
     const confirmed = await options.confirmDialog.ask({
-      title: isBatch ? 'Delete images' : 'Delete image',
+      title: isBatch ? '批量删除图片' : '删除图片',
       message: file
-        ? `Delete ${file.filename}? This cannot be undone.`
-        : `Delete the ${paths.length} selected images? This cannot be undone.`,
-      confirmText: 'Delete',
-      cancelText: 'Cancel',
+        ? `确定要删除 ${file.filename} 吗？此操作不可恢复。`
+        : `确定要删除已选择的 ${paths.length} 张图片吗？此操作不可恢复。`,
+      confirmText: '删除',
+      cancelText: '取消',
     })
     if (!confirmed) return
 
     batchBusy.value = true
     await progressRuntime.start({
-      title: isBatch ? 'Delete images' : 'Delete image',
-      subtitle: file?.filename || `${paths.length} selected`,
+      title: isBatch ? '批量删除图片' : '删除图片',
+      subtitle: file?.filename || `已选择 ${paths.length} 张`,
       total: paths.length,
-      message: isBatch ? 'Submitting batch delete request...' : 'Submitting delete request...',
+      message: isBatch ? '正在提交批量删除请求...' : '正在提交删除请求...',
     })
     try {
       const result = await galleryApi.deleteFiles(paths)
       const removed = Number(result.removed || 0)
-      progressRuntime.record({ label: 'Refresh list', message: 'Deleted. Refreshing list...' })
+      progressRuntime.record({ label: '刷新列表', message: '删除完成，正在刷新列表...' })
       if (file) {
         options.selectedPaths.value.delete(file.path)
         options.selectedPaths.value = new Set(options.selectedPaths.value)
@@ -217,9 +217,9 @@ export function useGalleryOperationsRuntime(options: GalleryOperationsRuntimeOpt
       } else {
         await options.loadGallery()
       }
-      progressRuntime.succeed(isBatch ? `Deleted ${removed} ${removed === 1 ? 'image' : 'images'}` : 'Image deleted', removed)
+      progressRuntime.succeed(isBatch ? `已删除 ${removed} 张图片` : '图片已删除', removed)
     } catch (error: any) {
-      const message = error?.message || (isBatch ? 'Batch delete failed' : 'Failed to delete image')
+      const message = error?.message || (isBatch ? '批量删除失败' : '删除图片失败')
       progressRuntime.fail(message)
     } finally {
       batchBusy.value = false
@@ -241,18 +241,18 @@ export function useGalleryOperationsRuntime(options: GalleryOperationsRuntimeOpt
 
     batchBusy.value = true
     await progressRuntime.start({
-      title: 'Download images',
-      subtitle: `${paths.length} selected`,
+      title: '批量下载图片',
+      subtitle: `已选择 ${paths.length} 张`,
       total: paths.length,
-      message: 'Packing ZIP...',
+      message: '正在打包 ZIP...',
     })
     try {
       const blob = await galleryApi.downloadZip(paths)
-      progressRuntime.record({ label: 'Start download', message: 'ZIP ready. Starting download...' })
+      progressRuntime.record({ label: '启动下载', message: 'ZIP 已生成，正在启动下载...' })
       saveBlob(blob, `images_${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.zip`)
-      progressRuntime.succeed(`Packed ${paths.length} ${paths.length === 1 ? 'image' : 'images'}`, paths.length)
+      progressRuntime.succeed(`已打包 ${paths.length} 张图片`, paths.length)
     } catch (error: any) {
-      const message = error?.message || 'Batch download failed'
+      const message = error?.message || '批量下载失败'
       progressRuntime.fail(message)
     } finally {
       batchBusy.value = false
@@ -264,10 +264,10 @@ export function useGalleryOperationsRuntime(options: GalleryOperationsRuntimeOpt
     genboxPushBusyPath.value = file.path
     try {
       const result = await galleryApi.pushToGenBox(file.path)
-      options.toast.success(result.label, 'Push succeeded')
+      options.toast.success(result.label, 'Push 成功')
       await options.loadGallery()
     } catch (error) {
-      options.toast.error(errorMessage(error, 'Failed to push to GenBox'), 'Push failed')
+      options.toast.error(errorMessage(error, '推送到 GenBox 失败'), 'Push 失败')
     } finally {
       genboxPushBusyPath.value = null
     }

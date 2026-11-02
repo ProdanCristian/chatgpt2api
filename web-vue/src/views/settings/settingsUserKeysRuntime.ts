@@ -65,7 +65,7 @@ export function useSettingsUserKeysRuntime(options: SettingsUserKeysRuntimeOptio
     runtime: options.runtime,
     key: options.requestKey,
     loading: userKeysLoading,
-    errorMessage: 'Failed to load user keys',
+    errorMessage: '加载用户密钥失败',
   })
 
   async function copyUserKey(value: string) {
@@ -73,9 +73,9 @@ export function useSettingsUserKeysRuntime(options: SettingsUserKeysRuntimeOptio
     try {
       await navigator.clipboard.writeText(value)
       if (value === newUserKey.value) clearNewUserKey()
-      toast.success('Key copied')
+      toast.success('已复制密钥')
     } catch {
-      toast.error('Copy failed. Please copy it manually')
+      toast.error('复制失败，请手动复制')
     }
   }
 
@@ -128,11 +128,11 @@ export function useSettingsUserKeysRuntime(options: SettingsUserKeysRuntimeOptio
       const response = await userKeysApi.create(userKeyForm.value.name.trim())
       upsertUserKey(response.item)
       revealNewUserKey(response.raw_key)
-      toast.success('User key created')
+      toast.success('用户密钥已创建')
       userKeyModal.value = ''
       resetUserKeyForm()
     } catch (error) {
-      toast.error(errorMessage(error, 'Failed to create user key'))
+      toast.error(errorMessage(error, '创建用户密钥失败'))
     } finally {
       userKeyBusy.value = ''
     }
@@ -155,11 +155,11 @@ export function useSettingsUserKeysRuntime(options: SettingsUserKeysRuntimeOptio
     try {
       const response = await userKeysApi.update(item.id, updates)
       upsertUserKey(response.item)
-      toast.success(nextKey ? 'User key updated' : 'User name updated')
+      toast.success(nextKey ? '用户密钥已更新' : '用户名称已更新')
       userKeyModal.value = ''
       resetUserKeyForm()
     } catch (error) {
-      toast.error(errorMessage(error, 'Failed to update user key'))
+      toast.error(errorMessage(error, '更新用户密钥失败'))
     } finally {
       userKeyBusy.value = ''
     }
@@ -170,9 +170,9 @@ export function useSettingsUserKeysRuntime(options: SettingsUserKeysRuntimeOptio
     try {
       const response = await userKeysApi.update(item.id, { enabled: !item.enabled })
       upsertUserKey(response.item)
-      toast.success(item.enabled ? 'User key disabled' : 'User key enabled')
+      toast.success(item.enabled ? '用户密钥已禁用' : '用户密钥已启用')
     } catch (error) {
-      toast.error(errorMessage(error, 'Failed to update user key'))
+      toast.error(errorMessage(error, '更新用户密钥失败'))
     } finally {
       userKeyBusy.value = ''
     }
@@ -180,10 +180,10 @@ export function useSettingsUserKeysRuntime(options: SettingsUserKeysRuntimeOptio
 
   async function deleteUserKey(item: UserKey) {
     const confirmed = await confirmDialog.ask({
-      title: 'Delete user key',
-      message: `Delete the user key "${item.name || item.id}"? Once deleted, this key can no longer call the API.`,
-      confirmText: 'Delete',
-      cancelText: 'Cancel',
+      title: '删除用户密钥',
+      message: `确定删除用户密钥「${item.name || item.id}」吗？删除后这条密钥将无法继续调用接口。`,
+      confirmText: '删除',
+      cancelText: '取消',
     })
     if (!confirmed) return
 
@@ -195,9 +195,9 @@ export function useSettingsUserKeysRuntime(options: SettingsUserKeysRuntimeOptio
         userKeyModal.value = ''
         resetUserKeyForm()
       }
-      toast.success('User key deleted')
+      toast.success('用户密钥已删除')
     } catch (error) {
-      toast.error(errorMessage(error, 'Failed to delete user key'))
+      toast.error(errorMessage(error, '删除用户密钥失败'))
     } finally {
       userKeyBusy.value = ''
     }

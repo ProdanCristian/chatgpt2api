@@ -61,17 +61,17 @@ export function useStudioChatStreamRuntime(hooks: StudioChatStreamRuntimeHooks) 
       })
       flushPendingDelta()
       input.assistantMessage.status = 'done'
-      if (!input.assistantMessage.content.trim()) input.assistantMessage.content = 'Upstream returned no content.'
+      if (!input.assistantMessage.content.trim()) input.assistantMessage.content = '上游没有返回内容。'
       hooks.markConversationNotice(input.conversation.id, 'done')
     } catch (error) {
       flushPendingDelta()
       if (controller.signal.aborted) {
         input.assistantMessage.status = 'done'
-        if (!input.assistantMessage.content.trim()) input.assistantMessage.content = 'Stopped.'
+        if (!input.assistantMessage.content.trim()) input.assistantMessage.content = '已停止。'
         hooks.markConversationNotice(input.conversation.id, 'done')
         return
       }
-      const message = studioErrorMessage(error, 'Chat request failed')
+      const message = studioErrorMessage(error, '对话请求失败')
       input.assistantMessage.status = 'error'
       input.assistantMessage.error = message
       input.assistantMessage.content = input.assistantMessage.content.trim()
